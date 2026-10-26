@@ -121,6 +121,8 @@
     white-space:nowrap;
   }
   .btn:hover{background:var(--panel-2);border-color:var(--ink-3)}
+  .btn:disabled,.auth-link:disabled{opacity:.55;cursor:not-allowed}
+  .btn:disabled:hover{background:var(--panel);border-color:var(--line-strong)}
   .btn:active{transform:translateY(1px)}
   .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
   .btn.primary:hover{filter:brightness(1.06);background:var(--accent)}
@@ -139,6 +141,32 @@
 
   .save-btn{position:relative}
   .save-dot{width:7px;height:7px;border-radius:50%;background:var(--ot);flex:none}
+  .account-btn{position:relative}
+  .account-dot{position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:var(--ink-3);box-shadow:0 0 0 2px var(--panel)}
+  .account-dot.ok{background:var(--good)}
+  .account-dot.pending{background:var(--ot)}
+  .account-dot.error{background:var(--bad)}
+
+  .dlg-body.account-body{grid-template-columns:1fr;gap:12px}
+  .auth-form{display:flex;flex-direction:column;gap:11px}
+  .auth-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .auth-link{border:0;background:none;color:var(--accent);font:inherit;font-size:12px;font-weight:550;text-align:left;padding:0;cursor:pointer;align-self:flex-start}
+  .auth-link:hover{text-decoration:underline}
+  .danger-link{color:var(--bad)}
+  .auth-user{padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel-2)}
+  .auth-email{font-size:13px;font-weight:600;overflow-wrap:anywhere}
+  .auth-status{font-size:11.5px;color:var(--ink-3);margin-top:3px;line-height:1.4}
+  .auth-msg{font-size:12px;line-height:1.45;padding:8px 10px;border-radius:8px;background:var(--bad-soft);color:var(--bad)}
+  .auth-msg.ok{background:var(--good-soft);color:var(--good)}
+  .auth-msg.info{background:var(--accent-soft);color:var(--accent)}
+  .auth-note{font-size:11px;line-height:1.45;color:var(--ink-3)}
+  .auth-hint{font-size:12px;color:var(--ink-2);line-height:1.45}
+  .sync-counts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .sync-counts > div{padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel-2)}
+  .sync-counts b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);font-weight:600;margin-bottom:3px}
+  .sync-counts span{font-size:12.5px;color:var(--ink);font-variant-numeric:tabular-nums}
+  .sync-counts .muted{display:block;font-size:10.5px;color:var(--ink-3);margin-top:2px}
+  @media (max-width:560px){.sync-counts{grid-template-columns:1fr}}
 
   .data-block{
     grid-column:1 / -1;display:flex;flex-direction:column;gap:6px;
@@ -605,6 +633,12 @@
     </div>
 
     <div class="actions">
+      <button class="btn icon-only account-btn" id="accountBtn" type="button" title="Compte cloud">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c0-3.3 3.1-6 7-6s7 2.7 7 6"></path></svg>
+        <span class="btn-label">Compte</span>
+        <span class="account-dot" id="accountDot" hidden></span>
+      </button>
+
       <button class="btn primary save-btn" id="saveBtn" type="button" title="Sauvegarder dans le fichier de sauvegarde (écrase la version précédente)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h11l4 4v14H5z"></path><path d="M8 3v6h7V3"></path><rect x="8" y="13" width="8" height="5" rx="1"></rect></svg>
         <span class="btn-label">Sauvegarder</span>
@@ -806,7 +840,7 @@
 
       <div class="data-block">
         <div class="db-title">Où sont mes données ?</div>
-        <p>Vos heures sont enregistrées automatiquement dans ce navigateur. Le bouton <b>Sauvegarder</b> écrit un fichier JSON&nbsp;: choisissez une fois son emplacement (par exemple le dossier de l’application), puis chaque sauvegarde <b>écrase ce même fichier</b>.</p>
+        <p>Vos heures sont enregistrées automatiquement dans ce navigateur. Avec un <b>compte cloud</b> (bouton Compte), elles sont aussi synchronisées dans votre compte Supabase, accessible uniquement par vous. Le bouton <b>Sauvegarder</b> écrit en plus un fichier JSON&nbsp;: choisissez une fois son emplacement (par exemple le dossier de l’application), puis chaque sauvegarde <b>écrase ce même fichier</b>.</p>
         <p class="db-status" id="dataStatus">Aucune sauvegarde fichier pour l’instant.</p>
         <div class="db-actions">
           <button type="button" class="btn" id="saveFromDlg">Sauvegarder maintenant</button>
@@ -841,9 +875,88 @@
   </form>
 </dialog>
 
+<!-- Compte cloud -->
+<dialog id="accountDlg" aria-labelledby="accountTitle">
+  <div class="dlg-head">
+    <h2 id="accountTitle">Compte cloud</h2>
+    <p id="accountSubtitle">Retrouvez vos heures sur tous vos appareils.</p>
+  </div>
+  <div class="dlg-body account-body">
+    <div id="authLoginView">
+      <form id="loginForm" class="auth-form" novalidate>
+        <label class="field">
+          <span>Email</span>
+          <input id="authEmail" type="email" autocomplete="email" autocapitalize="none" spellcheck="false" required>
+        </label>
+        <label class="field">
+          <span>Mot de passe</span>
+          <input id="authPassword" type="password" autocomplete="current-password" required>
+        </label>
+        <div class="auth-actions">
+          <button class="btn primary" type="submit" id="loginBtn">Se connecter</button>
+          <button class="btn" type="button" id="signupBtn">Créer un compte</button>
+        </div>
+        <button class="auth-link" type="button" id="forgotBtn">Mot de passe oublié ?</button>
+      </form>
+    </div>
+
+    <div id="authLoggedView" hidden>
+      <div class="auth-user">
+        <div class="auth-email" id="authUserEmail"></div>
+        <div class="auth-status" id="authStatus"></div>
+      </div>
+      <div class="auth-actions">
+        <button class="btn" type="button" id="syncNowBtn">Synchroniser maintenant</button>
+        <button class="btn" type="button" id="logoutBtn">Se déconnecter</button>
+      </div>
+      <button class="auth-link danger-link" type="button" id="logoutClearBtn">Se déconnecter et effacer cet appareil</button>
+    </div>
+
+    <div id="authRecoveryView" hidden>
+      <p class="auth-hint">Choisissez un nouveau mot de passe.</p>
+      <form id="recoveryForm" class="auth-form" novalidate>
+        <label class="field">
+          <span>Nouveau mot de passe</span>
+          <input id="newPassword" type="password" autocomplete="new-password" required>
+        </label>
+        <label class="field">
+          <span>Confirmer</span>
+          <input id="newPassword2" type="password" autocomplete="new-password" required>
+        </label>
+        <button class="btn primary" type="submit" id="recoveryBtn">Enregistrer le mot de passe</button>
+      </form>
+    </div>
+
+    <p class="auth-msg" id="authMsg" hidden></p>
+    <p class="auth-note" id="authNote">Vos données sont stockées dans votre projet Supabase et protégées par votre compte.</p>
+  </div>
+  <div class="dlg-foot">
+    <span class="grow"></span>
+    <button class="btn" type="button" id="closeAccountBtn">Fermer</button>
+  </div>
+</dialog>
+
+<!-- Choix de sauvegarde -->
+<dialog id="syncDlg" aria-labelledby="syncTitle">
+  <div class="dlg-head">
+    <h2 id="syncTitle">Sauvegarde du compte</h2>
+    <p id="syncText"></p>
+  </div>
+  <div class="dlg-body account-body">
+    <div class="sync-counts" id="syncCounts"></div>
+  </div>
+  <div class="dlg-foot">
+    <button class="btn" type="button" id="syncLaterBtn">Plus tard</button>
+    <span class="grow"></span>
+    <button class="btn" type="button" id="syncCloudBtn">Charger le compte</button>
+    <button class="btn primary" type="button" id="syncLocalBtn">Envoyer cet appareil</button>
+  </div>
+</dialog>
+
 <input type="file" id="importFile" accept=".json,application/json" hidden>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function(){
   'use strict';
@@ -1375,6 +1488,37 @@
   var BACKUP_META_KEY = STORAGE_KEY + '.backup';
   var backupDbPromise = null;
 
+  /* ---------------- compte cloud ---------------- */
+  var SUPABASE_URL = 'https://tohucrrmjezlriasjxvo.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvaHVjcnJtamV6bHJpYXNqeHZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMwMzkxNzUsImV4cCI6MjEwODYxNTE3NX0.yWxMFKpm97G9o4n-gnFFgWkvJTLCN1p8sc6O63SSjOg';
+  var APP_URL = 'https://tiliochr.github.io/suivi-horaire/';
+  var SYNC_META_KEY = STORAGE_KEY + '.sync';
+  var sb = null;
+  try {
+    if (window.supabase){
+      sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+      });
+    }
+  } catch (e) { sb = null; }
+
+  var currentUser = null;
+  var cloudRevision = null;
+  var cloudStatus = 'local';
+  var cloudDirty = false;
+  var cloudReady = false;
+  var cloudBootstrapping = false;
+  var cloudSyncing = false;
+  var cloudConflict = false;
+  var pendingRemote = null;
+  var syncChoiceMode = null;
+  var syncTimer = null;
+  var saveSeq = 0;
+  var lastBootUserId = null;
+  var recoveryMode = false;
+  var authBusy = false;
+  var suppressCloud = false;
+
   function save(){
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -1384,6 +1528,7 @@
     }
     if (els.storageWarn) els.storageWarn.hidden = storageOk;
     dirty = true;
+    if (!suppressCloud) markLocalDirty();
     updateSaveUI();
   }
 
@@ -1418,6 +1563,682 @@
     } catch (e) {
       return null;
     }
+  }
+
+  function readSyncMeta(){
+    try { return JSON.parse(localStorage.getItem(SYNC_META_KEY) || 'null'); } catch (e){ return null; }
+  }
+
+  function writeSyncMeta(meta){
+    try {
+      if (meta) localStorage.setItem(SYNC_META_KEY, JSON.stringify(meta));
+      else localStorage.removeItem(SYNC_META_KEY);
+    } catch (e){}
+  }
+
+  function stateIsEmpty(s){
+    if (!s) return true;
+    if ((s.shifts && s.shifts.length) || (s.rests && s.rests.length)) return false;
+    var cur = normalizeSettings(s.settings);
+    var def = normalizeSettings(null);
+    return cur.threshold === def.threshold && cur.otCoef === def.otCoef &&
+      cur.nightCoef === def.nightCoef && cur.nightStart === def.nightStart &&
+      cur.nightEnd === def.nightEnd && cur.mode === def.mode;
+  }
+
+  function stateSummary(s){
+    var days = {};
+    (s && s.shifts || []).forEach(function(x){ if (x.date) days[x.date] = true; });
+    var rest = 0;
+    (s && s.rests || []).forEach(function(r){ rest += Math.max(0, Number(r.hours) || 0); });
+    return { days: Object.keys(days).length, rest: rest };
+  }
+
+  function cloudPayload(){
+    return JSON.parse(JSON.stringify({
+      settings: state.settings,
+      shifts: state.shifts,
+      rests: state.rests
+    }));
+  }
+
+  function authRedirect(){ return APP_URL; }
+
+  function statusText(){
+    if (!currentUser) return 'Mode local — connectez-vous pour synchroniser.';
+    if (cloudStatus === 'syncing') return 'Synchronisation en cours…';
+    if (cloudStatus === 'pending') return 'Modifications en attente de synchronisation.';
+    if (cloudStatus === 'offline') return 'Hors ligne — synchronisation au retour du réseau.';
+    if (cloudStatus === 'conflict') return 'Conflit : le compte a été modifié sur un autre appareil.';
+    if (cloudStatus === 'error') return 'Synchronisation impossible. Vérifiez votre connexion.';
+    if (cloudStatus === 'setup') return 'La table de sauvegarde n’est pas encore créée dans Supabase.';
+    var meta = readSyncMeta();
+    var at = meta && currentUser && meta.userId === currentUser.id && meta.syncedAt ? new Date(meta.syncedAt) : null;
+    if (!at) return 'Synchronisé';
+    return 'Synchronisé · ' + at.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' }) +
+      ' à ' + at.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function setSyncStatus(status){
+    cloudStatus = status;
+    updateAccountUI();
+  }
+
+  function accountDotClass(){
+    if (!currentUser) return '';
+    if (cloudStatus === 'synced') return 'ok';
+    if (cloudStatus === 'pending' || cloudStatus === 'syncing') return 'pending';
+    return 'error';
+  }
+
+  function updateAccountUI(){
+    if (els.accountDot){
+      var cls = accountDotClass();
+      els.accountDot.hidden = !currentUser;
+      els.accountDot.className = 'account-dot' + (cls ? ' ' + cls : '');
+    }
+    if (els.accountBtn){
+      els.accountBtn.title = currentUser ? 'Compte cloud — ' + (currentUser.email || '') : 'Se connecter / créer un compte';
+    }
+    if (!els.authLoginView) return;
+    var showRecovery = !!recoveryMode;
+    var logged = !!currentUser && !showRecovery;
+    els.authLoginView.hidden = !!currentUser || showRecovery;
+    els.authLoggedView.hidden = !logged;
+    els.authRecoveryView.hidden = !showRecovery;
+    els.authNote.hidden = logged;
+    els.authUserEmail.textContent = currentUser ? (currentUser.email || '') : '';
+    els.authStatus.textContent = currentUser ? statusText() : '';
+    els.syncNowBtn.disabled = !currentUser;
+    els.logoutBtn.disabled = !currentUser;
+    els.logoutClearBtn.disabled = !currentUser;
+  }
+
+  function setAuthMsg(text, kind){
+    if (!els.authMsg) return;
+    if (!text){
+      els.authMsg.hidden = true;
+      els.authMsg.textContent = '';
+      return;
+    }
+    els.authMsg.textContent = text;
+    els.authMsg.className = 'auth-msg' + (kind ? ' ' + kind : '');
+    els.authMsg.hidden = false;
+  }
+
+  function authErrorText(err){
+    var m = (err && (err.message || err.error_description || err.msg)) || '';
+    var code = (err && err.code) || '';
+    if (code === 'invalid_credentials' || /Invalid login credentials/i.test(m)) return 'Email ou mot de passe incorrect.';
+    if (code === 'email_not_confirmed' || /Email not confirmed/i.test(m)) return 'Confirmez d’abord votre email (vérifiez votre boîte de réception).';
+    if (code === 'user_already_exists' || /User already registered/i.test(m)) return 'Ce compte existe déjà. Connectez-vous.';
+    if (code === 'weak_password' || /Password should be at least/i.test(m)) return 'Le mot de passe doit contenir au moins 6 caractères.';
+    if (code === 'over_email_send_rate_limit' || code === 'over_request_rate_limit' || /For security purposes|rate limit/i.test(m)) return 'Trop de tentatives. Réessayez dans quelques minutes.';
+    if (code === 'validation_failed' || /invalid email|Unable to validate email/i.test(m)) return 'Adresse email invalide.';
+    if (code === 'PGRST205' || /Could not find the table/i.test(m)) return 'La table de sauvegarde n’existe pas encore. Exécutez le script SQL dans Supabase.';
+    if (/JWT|session|refresh token|not authenticated/i.test(m)) return 'Session expirée. Reconnectez-vous.';
+    if (!navigator.onLine || /Failed to fetch|NetworkError|Load failed/i.test(m)) return 'Connexion impossible. Vérifiez votre accès Internet.';
+    return m || 'Une erreur est survenue.';
+  }
+
+  function openAccount(){
+    updateAccountUI();
+    setAuthMsg('');
+    if (!sb){
+      setAuthMsg('Connexion indisponible : vérifiez votre connexion Internet, puis rechargez la page.', 'info');
+    }
+    if (els.loginBtn) els.loginBtn.disabled = !sb;
+    if (els.signupBtn) els.signupBtn.disabled = !sb;
+    if (els.forgotBtn) els.forgotBtn.disabled = !sb;
+    if (!els.accountDlg.open) els.accountDlg.showModal();
+    var target = currentUser ? els.authStatus : (recoveryMode ? els.newPassword : els.authEmail);
+    if (target && target.focus) setTimeout(function(){ target.focus(); }, 60);
+  }
+
+  function closeAccount(){
+    if (els.accountDlg.open) els.accountDlg.close();
+  }
+
+  function clearAuthFields(){
+    if (els.authPassword) els.authPassword.value = '';
+    if (els.newPassword) els.newPassword.value = '';
+    if (els.newPassword2) els.newPassword2.value = '';
+  }
+
+  function initAuth(){
+    updateAccountUI();
+    if (!sb) return;
+    sb.auth.onAuthStateChange(function(event, session){
+      if (event === 'PASSWORD_RECOVERY'){
+        if (session && session.user) currentUser = session.user;
+        recoveryMode = true;
+        updateAccountUI();
+        if (!els.accountDlg.open) els.accountDlg.showModal();
+        setAuthMsg('Choisissez un nouveau mot de passe.', 'info');
+        return;
+      }
+      if (event === 'SIGNED_OUT'){
+        handleSignedOut();
+        return;
+      }
+      if (session && session.user){
+        setTimeout(function(){ handleSession(session); }, 0);
+      } else {
+        currentUser = null;
+        updateAccountUI();
+      }
+    });
+    sb.auth.getSession().then(function(res){
+      if (res && res.data && res.data.session) handleSession(res.data.session);
+      else updateAccountUI();
+    }).catch(function(){ updateAccountUI(); });
+  }
+
+  async function handleSession(session){
+    if (!session || !session.user){
+      currentUser = null;
+      updateAccountUI();
+      return;
+    }
+    currentUser = session.user;
+    updateAccountUI();
+    if (cloudBootstrapping) return;
+    if (lastBootUserId === currentUser.id && cloudReady) return;
+    lastBootUserId = currentUser.id;
+    await bootstrapCloud();
+  }
+
+  function handleSignedOut(){
+    currentUser = null;
+    cloudRevision = null;
+    cloudDirty = false;
+    cloudReady = false;
+    cloudBootstrapping = false;
+    cloudConflict = false;
+    pendingRemote = null;
+    syncChoiceMode = null;
+    lastBootUserId = null;
+    recoveryMode = false;
+    if (syncTimer){ clearTimeout(syncTimer); syncTimer = null; }
+    if (els.syncDlg && els.syncDlg.open) els.syncDlg.close();
+    setSyncStatus('local');
+    updateAccountUI();
+  }
+
+  async function bootstrapCloud(){
+    if (!sb || !currentUser || cloudBootstrapping) return;
+    var uid = currentUser.id;
+    cloudBootstrapping = true;
+    cloudReady = false;
+    setSyncStatus('syncing');
+    try {
+      var res = await sb.from('app_state').select('data, revision, updated_at').eq('user_id', uid).maybeSingle();
+      if (!currentUser || currentUser.id !== uid) return;
+      if (res.error){
+        handleCloudFailure(res.error);
+        return;
+      }
+      var row = res.data;
+      var meta = readSyncMeta();
+      var sameUser = !!(meta && meta.userId === uid);
+      var localEmpty = stateIsEmpty(state);
+
+      if (!row){
+        cloudRevision = null;
+        if (!localEmpty && meta && !sameUser){
+          if (!confirm('Cet appareil contient les données d’un autre compte. Les effacer pour utiliser ce compte ?')){
+            doLogout(false);
+            return;
+          }
+          suppressCloud = true;
+          state = normalizeState({});
+          try { localStorage.removeItem(STORAGE_KEY); } catch (e){}
+          writeSyncMeta(null);
+          suppressCloud = false;
+          renderAll();
+          cloudReady = true;
+          setSyncStatus('synced');
+          toast('Données de l’appareil effacées');
+          return;
+        }
+        if (!localEmpty){
+          await saveToCloud();
+        } else {
+          cloudReady = true;
+          writeSyncMeta({ userId: uid, revision: null, dirty: false, syncedAt: new Date().toISOString() });
+          setSyncStatus('synced');
+        }
+        return;
+      }
+
+      cloudRevision = row.revision;
+      var remote = normalizeState(row.data);
+      var remoteEmpty = stateIsEmpty(remote);
+
+      if (meta && !sameUser && !localEmpty){
+        showSyncChoice('other', row, remote);
+        return;
+      }
+      if (localEmpty && remoteEmpty){
+        cloudReady = true;
+        writeSyncMeta({ userId: uid, revision: row.revision, dirty: false, syncedAt: new Date().toISOString() });
+        setSyncStatus('synced');
+        return;
+      }
+      if (localEmpty){
+        applyRemoteState(remote, row);
+        return;
+      }
+      if (remoteEmpty){
+        cloudDirty = true;
+        if (sameUser){ meta.dirty = true; writeSyncMeta(meta); }
+        await saveToCloud();
+        return;
+      }
+      if (sameUser && meta.revision === row.revision){
+        if (meta.dirty || cloudDirty){
+          cloudDirty = true;
+          await saveToCloud();
+        } else {
+          cloudReady = true;
+          setSyncStatus('synced');
+        }
+        return;
+      }
+      if (sameUser && meta.revision < row.revision){
+        if (meta.dirty || cloudDirty){
+          showSyncChoice('conflict', row, remote);
+        } else {
+          applyRemoteState(remote, row);
+        }
+        return;
+      }
+      showSyncChoice(sameUser ? 'conflict' : 'choose', row, remote);
+    } catch (err){
+      handleCloudFailure(err);
+    } finally {
+      cloudBootstrapping = false;
+    }
+  }
+
+  function applyRemoteState(remote, row){
+    suppressCloud = true;
+    state = normalizeState(remote);
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e){}
+    suppressCloud = false;
+    cloudRevision = row.revision;
+    cloudDirty = false;
+    cloudReady = true;
+    cloudConflict = false;
+    pendingRemote = null;
+    syncChoiceMode = null;
+    if (currentUser){
+      writeSyncMeta({ userId: currentUser.id, revision: row.revision, dirty: false, syncedAt: new Date().toISOString() });
+    }
+    dirty = true;
+    renderAll();
+    updateSaveUI();
+    setSyncStatus('synced');
+    updateAccountUI();
+    if (els.syncDlg && els.syncDlg.open) els.syncDlg.close();
+    toast('Sauvegarde du compte chargée');
+  }
+
+  async function fetchCloudRow(){
+    if (!sb || !currentUser) return null;
+    var res = await sb.from('app_state').select('data, revision, updated_at').eq('user_id', currentUser.id).maybeSingle();
+    if (res.error){ handleCloudFailure(res.error); return null; }
+    return res.data || null;
+  }
+
+  async function saveToCloud(){
+    if (!sb || !currentUser) return;
+    if (cloudSyncing){ cloudDirty = true; return; }
+    var uid = currentUser.id;
+    var seq = saveSeq;
+    var payload = cloudPayload();
+    cloudSyncing = true;
+    setSyncStatus('syncing');
+    try {
+      var res;
+      if (cloudRevision == null){
+        res = await sb.from('app_state').insert({ user_id: uid, data: payload }).select('revision, updated_at').single();
+        if (!currentUser || currentUser.id !== uid) return;
+        if (res.error){
+          if (res.error.code === '23505'){
+            var remoteRow = await fetchCloudRow();
+            if (remoteRow) showSyncChoice('conflict', remoteRow, normalizeState(remoteRow.data));
+            return;
+          }
+          handleCloudFailure(res.error);
+          return;
+        }
+      } else {
+        res = await sb.from('app_state').update({ data: payload }).eq('user_id', uid).eq('revision', cloudRevision).select('revision, updated_at').maybeSingle();
+        if (!currentUser || currentUser.id !== uid) return;
+        if (res.error){ handleCloudFailure(res.error); return; }
+        if (!res.data){
+          var row = await fetchCloudRow();
+          if (row){
+            showSyncChoice('conflict', row, normalizeState(row.data));
+          } else {
+            cloudRevision = null;
+            cloudDirty = true;
+            setSyncStatus('pending');
+            scheduleCloudSave();
+          }
+          return;
+        }
+      }
+
+      if (!res.data) return;
+      cloudRevision = res.data.revision;
+      cloudReady = true;
+      cloudConflict = false;
+      if (seq === saveSeq){
+        cloudDirty = false;
+        writeSyncMeta({ userId: uid, revision: cloudRevision, dirty: false, syncedAt: new Date().toISOString() });
+        setSyncStatus('synced');
+      } else {
+        cloudDirty = true;
+        writeSyncMeta({ userId: uid, revision: cloudRevision, dirty: true, syncedAt: new Date().toISOString() });
+        setSyncStatus('pending');
+        scheduleCloudSave();
+      }
+      updateAccountUI();
+    } catch (err){
+      if (currentUser && currentUser.id === uid) handleCloudFailure(err);
+    } finally {
+      cloudSyncing = false;
+    }
+  }
+
+  function scheduleCloudSave(){
+    if (!sb || !currentUser || !cloudReady || cloudConflict) return;
+    if (syncTimer) return;
+    setSyncStatus('pending');
+    syncTimer = setTimeout(function(){
+      syncTimer = null;
+      saveToCloud();
+    }, 1200);
+  }
+
+  function markLocalDirty(){
+    cloudDirty = true;
+    saveSeq++;
+    var meta = readSyncMeta();
+    if (meta){
+      meta.dirty = true;
+      writeSyncMeta(meta);
+    }
+    scheduleCloudSave();
+  }
+
+  function handleCloudFailure(err){
+    var msg = authErrorText(err);
+    var m = (err && err.message) || '';
+    var code = (err && err.code) || '';
+    var prev = cloudStatus;
+    if (code === 'PGRST205' || /Could not find the table/i.test(m)){
+      cloudReady = false;
+      setSyncStatus('setup');
+    } else if (!navigator.onLine || /Failed to fetch|NetworkError|Load failed|fetch/i.test(m)){
+      cloudReady = true;
+      setSyncStatus('offline');
+    } else if (code === 'PGRST301' || /JWT|session|refresh token|not authenticated/i.test(m)){
+      cloudReady = false;
+      setSyncStatus('error');
+    } else {
+      cloudReady = true;
+      setSyncStatus('error');
+    }
+    cloudDirty = true;
+    var meta = readSyncMeta();
+    if (meta && currentUser && meta.userId === currentUser.id){
+      meta.dirty = true;
+      writeSyncMeta(meta);
+    }
+    updateAccountUI();
+    if (prev !== cloudStatus) toast(msg);
+  }
+
+  function showSyncChoice(mode, row, remote){
+    syncChoiceMode = mode;
+    pendingRemote = row;
+    cloudConflict = true;
+    cloudReady = false;
+    var localSum = stateSummary(state);
+    var remoteSum = stateSummary(remote);
+    var localLine = localSum.days + ' journée' + (localSum.days > 1 ? 's' : '') + ' · ' + fmtH(localSum.rest) + ' de repos';
+    var remoteLine = remoteSum.days + ' journée' + (remoteSum.days > 1 ? 's' : '') + ' · ' + fmtH(remoteSum.rest) + ' de repos';
+    var remoteDate = row && row.updated_at
+      ? new Date(row.updated_at).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+      : '';
+
+    els.syncCounts.innerHTML =
+      '<div><b>Cet appareil</b><span>' + esc(localLine) + '</span></div>' +
+      '<div><b>Compte</b><span>' + esc(remoteLine) + '</span>' +
+      (remoteDate ? '<span class="muted">' + esc(remoteDate) + '</span>' : '') + '</div>';
+
+    els.syncLocalBtn.hidden = false;
+    els.syncLocalBtn.className = 'btn primary';
+    els.syncCloudBtn.className = 'btn';
+    if (mode === 'other'){
+      els.syncTitle.textContent = 'Données d’un autre compte';
+      els.syncText.textContent = 'Cet appareil contient des données enregistrées avec un autre compte. Chargez la sauvegarde de ce compte pour continuer.';
+      els.syncCloudBtn.textContent = 'Charger ce compte';
+      els.syncCloudBtn.className = 'btn primary';
+      els.syncLocalBtn.hidden = true;
+      els.syncLaterBtn.textContent = 'Se déconnecter';
+    } else if (mode === 'conflict'){
+      els.syncTitle.textContent = 'Conflit de sauvegarde';
+      els.syncText.textContent = 'Le compte a été modifié depuis un autre appareil. Choisissez la version à conserver : l’autre version sera remplacée.';
+      els.syncCloudBtn.textContent = 'Charger le compte';
+      els.syncLocalBtn.textContent = 'Envoyer cet appareil';
+      els.syncLaterBtn.textContent = 'Plus tard';
+    } else {
+      els.syncTitle.textContent = 'Sauvegarde du compte';
+      els.syncText.textContent = 'Ce compte contient déjà une sauvegarde. Choisissez celle à conserver : aucune fusion automatique n’est faite.';
+      els.syncCloudBtn.textContent = 'Charger le compte';
+      els.syncLocalBtn.textContent = 'Envoyer cet appareil';
+      els.syncLaterBtn.textContent = 'Plus tard';
+    }
+
+    setSyncStatus(mode === 'conflict' ? 'conflict' : 'pending');
+    if (els.accountDlg.open) els.accountDlg.close();
+    if (!els.syncDlg.open) els.syncDlg.showModal();
+    updateAccountUI();
+  }
+
+  function resolveCloudChoice(useCloud){
+    if (!pendingRemote || !syncChoiceMode) return;
+    var mode = syncChoiceMode;
+    var row = pendingRemote;
+    if (useCloud){
+      applyRemoteState(normalizeState(row.data), row);
+      syncChoiceMode = null;
+      cloudConflict = false;
+      return;
+    }
+    if (mode === 'other'){
+      doLogout(false);
+      return;
+    }
+    cloudRevision = row.revision;
+    cloudDirty = true;
+    cloudReady = true;
+    cloudConflict = false;
+    syncChoiceMode = null;
+    pendingRemote = null;
+    if (currentUser){
+      writeSyncMeta({ userId: currentUser.id, revision: cloudRevision, dirty: true, syncedAt: new Date().toISOString() });
+    }
+    if (els.syncDlg.open) els.syncDlg.close();
+    saveToCloud();
+  }
+
+  function deferSync(){
+    if (syncChoiceMode === 'other'){
+      doLogout(false);
+      return;
+    }
+    if (els.syncDlg.open) els.syncDlg.close();
+    cloudReady = false;
+    cloudConflict = true;
+    setSyncStatus('conflict');
+  }
+
+  async function doLogin(e){
+    if (e) e.preventDefault();
+    if (authBusy) return;
+    if (!sb){ setAuthMsg('Connexion indisponible : vérifiez votre connexion Internet.', 'info'); return; }
+    var email = (els.authEmail.value || '').trim();
+    var password = els.authPassword.value || '';
+    if (!email || !password){ setAuthMsg('Renseignez votre email et votre mot de passe.'); return; }
+    authBusy = true;
+    els.loginBtn.disabled = true;
+    var old = els.loginBtn.textContent;
+    els.loginBtn.textContent = 'Connexion…';
+    setAuthMsg('');
+    try {
+      var res = await sb.auth.signInWithPassword({ email: email, password: password });
+      if (res.error){ setAuthMsg(authErrorText(res.error)); return; }
+      if (res.data && res.data.session){
+        els.authPassword.value = '';
+        closeAccount();
+        await handleSession(res.data.session);
+        toast('Connecté');
+      }
+    } catch (err){
+      setAuthMsg(authErrorText(err));
+    } finally {
+      authBusy = false;
+      els.loginBtn.disabled = false;
+      els.loginBtn.textContent = old;
+    }
+  }
+
+  async function doSignup(){
+    if (authBusy) return;
+    if (!sb){ setAuthMsg('Connexion indisponible : vérifiez votre connexion Internet.', 'info'); return; }
+    var email = (els.authEmail.value || '').trim();
+    var password = els.authPassword.value || '';
+    if (!email || !password){ setAuthMsg('Renseignez votre email et votre mot de passe.'); return; }
+    if (password.length < 6){ setAuthMsg('Le mot de passe doit contenir au moins 6 caractères.'); return; }
+    authBusy = true;
+    els.signupBtn.disabled = true;
+    var old = els.signupBtn.textContent;
+    els.signupBtn.textContent = 'Création…';
+    setAuthMsg('');
+    try {
+      var res = await sb.auth.signUp({ email: email, password: password, options: { emailRedirectTo: authRedirect() } });
+      if (res.error){ setAuthMsg(authErrorText(res.error)); return; }
+      if (res.data && res.data.session){
+        els.authPassword.value = '';
+        closeAccount();
+        await handleSession(res.data.session);
+        toast('Compte créé');
+      } else {
+        setAuthMsg('Un email de confirmation a été envoyé à ' + email + '. Cliquez sur le lien, puis revenez vous connecter.', 'info');
+      }
+    } catch (err){
+      setAuthMsg(authErrorText(err));
+    } finally {
+      authBusy = false;
+      els.signupBtn.disabled = false;
+      els.signupBtn.textContent = old;
+    }
+  }
+
+  async function doForgot(){
+    if (authBusy) return;
+    if (!sb){ setAuthMsg('Connexion indisponible : vérifiez votre connexion Internet.', 'info'); return; }
+    var email = (els.authEmail.value || '').trim();
+    if (!email){ setAuthMsg('Renseignez votre email pour recevoir le lien.'); return; }
+    authBusy = true;
+    els.forgotBtn.disabled = true;
+    var old = els.forgotBtn.textContent;
+    els.forgotBtn.textContent = 'Envoi…';
+    setAuthMsg('');
+    try {
+      var res = await sb.auth.resetPasswordForEmail(email, { redirectTo: authRedirect() });
+      if (res.error){ setAuthMsg(authErrorText(res.error)); return; }
+      setAuthMsg('Si un compte existe pour ' + email + ', un email de réinitialisation a été envoyé.', 'info');
+    } catch (err){
+      setAuthMsg(authErrorText(err));
+    } finally {
+      authBusy = false;
+      els.forgotBtn.disabled = false;
+      els.forgotBtn.textContent = old;
+    }
+  }
+
+  async function doRecovery(e){
+    if (e) e.preventDefault();
+    if (authBusy) return;
+    if (!sb) return;
+    var p1 = els.newPassword.value || '';
+    var p2 = els.newPassword2.value || '';
+    if (p1.length < 6){ setAuthMsg('Le mot de passe doit contenir au moins 6 caractères.'); return; }
+    if (p1 !== p2){ setAuthMsg('Les deux mots de passe ne correspondent pas.'); return; }
+    authBusy = true;
+    els.recoveryBtn.disabled = true;
+    var old = els.recoveryBtn.textContent;
+    els.recoveryBtn.textContent = 'Enregistrement…';
+    try {
+      var res = await sb.auth.updateUser({ password: p1 });
+      if (res.error){ setAuthMsg(authErrorText(res.error)); return; }
+      recoveryMode = false;
+      els.newPassword.value = '';
+      els.newPassword2.value = '';
+      setAuthMsg('Mot de passe mis à jour.', 'ok');
+      updateAccountUI();
+      toast('Mot de passe mis à jour');
+    } catch (err){
+      setAuthMsg(authErrorText(err));
+    } finally {
+      authBusy = false;
+      els.recoveryBtn.disabled = false;
+      els.recoveryBtn.textContent = old;
+    }
+  }
+
+  async function doLogout(clearDevice){
+    if (clearDevice && !confirm('Se déconnecter et effacer les heures de cet appareil ? Le compte conserve sa sauvegarde.')) return;
+    try {
+      if (sb) await sb.auth.signOut({ scope: 'local' });
+    } catch (e){}
+    handleSignedOut();
+    clearAuthFields();
+    setAuthMsg(clearDevice ? 'Déconnecté, données locales effacées.' : 'Déconnecté.', 'info');
+    if (clearDevice){
+      suppressCloud = true;
+      state = normalizeState({});
+      try { localStorage.removeItem(STORAGE_KEY); } catch (e){}
+      writeSyncMeta(null);
+      suppressCloud = false;
+      cloudDirty = false;
+      cloudReady = false;
+      dirty = true;
+      renderAll();
+      updateSaveUI();
+    }
+    updateAccountUI();
+    toast(clearDevice ? 'Déconnecté et données locales effacées' : 'Déconnecté');
+  }
+
+  async function syncNow(){
+    if (!currentUser){ openAccount(); return; }
+    if (pendingRemote && syncChoiceMode){
+      showSyncChoice(syncChoiceMode, pendingRemote, normalizeState(pendingRemote.data));
+      return;
+    }
+    if (!cloudReady){
+      lastBootUserId = null;
+      await bootstrapCloud();
+      return;
+    }
+    await saveToCloud();
   }
 
   function toast(msg){
@@ -2380,6 +3201,11 @@
       'statCredit', 'statCreditSub', 'statTaken', 'statTakenSub', 'statBalance', 'statBalanceLabel', 'statBalanceCard',
       'formula', 'barBlock', 'barBase', 'barOt', 'barMark', 'barCaptionLeft', 'barCaptionRight',
       'shiftsCard', 'restsCard', 'overviewCard', 'overviewTitle', 'overviewBody', 'viewSwitch',
+      'accountBtn', 'accountDot', 'accountDlg', 'authLoginView', 'authLoggedView', 'authRecoveryView',
+      'authEmail', 'authPassword', 'authUserEmail', 'authStatus', 'loginForm', 'loginBtn', 'signupBtn', 'forgotBtn',
+      'newPassword', 'newPassword2', 'recoveryForm', 'recoveryBtn', 'authMsg', 'authNote', 'closeAccountBtn',
+      'syncNowBtn', 'logoutBtn', 'logoutClearBtn', 'syncDlg', 'syncTitle', 'syncText', 'syncCounts',
+      'syncCloudBtn', 'syncLocalBtn', 'syncLaterBtn',
       'shiftBody', 'shiftEmpty',
       'addShiftBtn', 'addShiftBtn2', 'restList', 'restEmpty', 'addRestBtn', 'restBody',
       'settingsDlg', 'settingsForm', 'modeHint', 'resetDataBtn', 'resetSettingsBtn', 'cancelSettingsBtn',
@@ -2397,6 +3223,26 @@
       if (btn) setViewMode(btn.dataset.view);
     });
     els.overviewBody.addEventListener('click', onOverviewClick);
+
+    els.accountBtn.addEventListener('click', openAccount);
+    els.closeAccountBtn.addEventListener('click', closeAccount);
+    els.loginForm.addEventListener('submit', doLogin);
+    els.signupBtn.addEventListener('click', doSignup);
+    els.forgotBtn.addEventListener('click', doForgot);
+    els.recoveryForm.addEventListener('submit', doRecovery);
+    els.logoutBtn.addEventListener('click', function(){ doLogout(false); });
+    els.logoutClearBtn.addEventListener('click', function(){ doLogout(true); });
+    els.syncNowBtn.addEventListener('click', syncNow);
+    els.syncCloudBtn.addEventListener('click', function(){ resolveCloudChoice(true); });
+    els.syncLocalBtn.addEventListener('click', function(){ resolveCloudChoice(false); });
+    els.syncLaterBtn.addEventListener('click', deferSync);
+    els.syncDlg.addEventListener('cancel', function(e){
+      if (syncChoiceMode === 'other'){ e.preventDefault(); }
+      else { deferSync(); }
+    });
+    window.addEventListener('online', function(){
+      if (currentUser && cloudDirty && cloudReady && !cloudConflict) saveToCloud();
+    });
 
     els.addShiftBtn.addEventListener('click', addShift);
     els.addShiftBtn2.addEventListener('click', addShift);
@@ -2441,7 +3287,9 @@
     });
 
     els.resetDataBtn.addEventListener('click', function(){
-      if (!confirm('Effacer toutes les journées et tous les repos ? Cette action est définitive.')) return;
+      if (!confirm(currentUser
+        ? 'Effacer toutes les journées et tous les repos, sur cet appareil et dans le compte cloud ? Cette action est définitive.'
+        : 'Effacer toutes les journées et tous les repos ? Cette action est définitive.')) return;
       state.shifts = [];
       state.rests = [];
       state.settings = normalizeSettings(null);
@@ -2464,6 +3312,7 @@
     bind();
     renderAll();
     loadBackupHandle();
+    initAuth();
     if (window.ResizeObserver){
       new ResizeObserver(function(){ scheduleLinks(); }).observe(document.querySelector('main'));
     }
