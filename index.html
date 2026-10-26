@@ -1682,7 +1682,8 @@
     if (code === 'email_not_confirmed' || /Email not confirmed/i.test(m)) return 'Confirmez d’abord votre email (vérifiez votre boîte de réception).';
     if (code === 'user_already_exists' || /User already registered/i.test(m)) return 'Ce compte existe déjà. Connectez-vous.';
     if (code === 'weak_password' || /Password should be at least/i.test(m)) return 'Le mot de passe doit contenir au moins 6 caractères.';
-    if (code === 'over_email_send_rate_limit' || code === 'over_request_rate_limit' || /For security purposes|rate limit/i.test(m)) return 'Trop de tentatives. Réessayez dans quelques minutes.';
+    if (code === 'over_email_send_rate_limit' || code === 'email_rate_limit_exceeded' || /Email rate limit exceeded/i.test(m)) return 'Limite d’envoi d’emails Supabase atteinte. Réessayez dans environ 1 heure, ou créez le compte depuis Supabase (Authentication → Users).';
+    if (code === 'over_request_rate_limit' || /For security purposes|rate limit/i.test(m)) return 'Trop de tentatives. Réessayez dans quelques minutes.';
     if (code === 'validation_failed' || /invalid email|Unable to validate email/i.test(m)) return 'Adresse email invalide.';
     if (code === 'PGRST205' || /Could not find the table/i.test(m)) return 'La table de sauvegarde n’existe pas encore. Exécutez le script SQL dans Supabase.';
     if (/JWT|session|refresh token|not authenticated/i.test(m)) return 'Session expirée. Reconnectez-vous.';
