@@ -74,12 +74,19 @@ Le détail (nom du fichier, dernière sauvegarde) est visible dans **Réglages �
    - Une fin avant le début signifie que la vacation passe minuit.
    - Vert = journée habituelle complète, orangé = journée incomplète ou décalée, violet = journée incomplète avec repos le même jour.
 2. **Repos pris** : saisissez les heures de repos posées ; elles sont déduites du solde et rappelées sur la ligne de la journée concernée.
-3. **Semaine** : flèches ‹ › pour changer de semaine, « Aujourd'hui » pour revenir.
+3. **Période** : choisissez **Semaine**, **Mois** ou **Année** en haut à droite. Les flèches ‹ › font défiler la période et « Aujourd'hui » revient à la période en cours.
 4. **Réglages** (roue dentée) : seuil, coefficients, plage de nuit, ordre de calcul, règles détaillées, sauvegarde et export CSV.
 
-Le détail du calcul est affiché sous les compteurs : base majorée, heures supp., repos acquis.
+En vue semaine, le détail du calcul est affiché sous les compteurs : base majorée, heures supp., repos acquis.
 
-**Imprimer** : produit une feuille de semaine compacte (une page), sans les boutons.
+**Imprimer** : imprime la vue affichée (semaine, mois ou année), sans les boutons.
+
+## Vues mois et année
+
+- **Mois** : un calendrier affiche les heures travaillées de chaque jour, avec les mêmes couleurs que la vue semaine. Un clic sur un jour ouvre sa semaine.
+- **Année** : un tableau récapitule les 12 mois (travaillé, nuit, heures supp., repos acquis, repos pris, solde) et un total annuel. Un clic sur un mois l'ouvre.
+
+Les heures supplémentaires et le repos acquis restent calculés **semaine par semaine**, comme dans le contrat. Ils sont rattachés au **lundi** de la semaine : le total d'un mois peut donc inclure quelques jours du mois voisin lorsqu'une semaine est à cheval. Les heures travaillées, la nuit et le repos pris sont, eux, comptés à leur date.
 
 ## Limites
 
