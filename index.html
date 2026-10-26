@@ -153,6 +153,8 @@
   }
   .menu button:hover{background:var(--panel-2)}
   .menu button + button{border-top:1px solid var(--line)}
+  .menu-note{font-size:10.5px;color:var(--ink-3);padding:7px 10px 4px;border-top:1px solid var(--line);font-variant-numeric:tabular-nums}
+  .menu-note[hidden]{display:none}
 
   .account-btn{position:relative}
   .account-dot{position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:var(--ink-3);box-shadow:0 0 0 2px var(--panel)}
@@ -181,10 +183,9 @@
   .sync-counts .muted{display:block;font-size:10.5px;color:var(--ink-3);margin-top:2px}
   @media (max-width:560px){.sync-counts{grid-template-columns:1fr}}
 
-  .usual-editor{grid-column:1 / -1;border-top:1px solid var(--line);padding-top:12px;margin-top:2px}
-  .usual-title{font-size:11.5px;font-weight:600;color:var(--ink-2)}
-  .usual-hint{font-size:11px;color:var(--ink-3);line-height:1.45;margin:2px 0 8px}
-  .usual-grid{display:flex;flex-direction:column;gap:6px}
+  .usual-editor{grid-column:1 / -1;border-top:1px solid var(--line);padding-top:16px;margin-top:2px}
+  .usual-title{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;font-weight:650;color:var(--ink-3);margin-bottom:10px}
+  .usual-grid{display:flex;flex-direction:column;gap:7px}
   .usual-row{display:grid;grid-template-columns:58px 1fr 1fr;gap:8px;align-items:center}
   .usual-day{font-size:12px;font-weight:600;color:var(--ink-2)}
   .usual-block{display:flex;align-items:center;gap:3px;min-width:0}
@@ -193,20 +194,7 @@
   .usual-block input[type=time]{width:76px;min-width:0;padding:4px 2px;border:1px solid var(--line);border-radius:6px;background:var(--panel-2);color:var(--ink);font-size:10.5px}
   .usual-block input[type=time]:disabled{opacity:.35}
   .usual-block .dash{color:var(--ink-3);font-size:9px}
-  .usual-error{font-size:11.5px;color:var(--bad);margin-top:3px}
-
-  .data-block{
-    grid-column:1 / -1;display:flex;flex-direction:column;gap:6px;
-    border-top:1px solid var(--line);padding-top:13px;margin-top:3px;
-  }
-  .db-title{font-size:11.5px;font-weight:600;color:var(--ink-2)}
-  .data-block p{font-size:11.5px;color:var(--ink-3);line-height:1.5}
-  .data-block p b{color:var(--ink-2);font-weight:600}
-  .db-status{font-variant-numeric:tabular-nums}
-  .db-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:3px}
-  .db-actions .btn{font-size:11.5px;padding:5px 9px}
-  .db-reset{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px;padding-top:8px;border-top:1px dashed var(--line-strong)}
-  .db-reset .btn{font-size:10.5px;padding:3px 7px}
+  .usual-error{font-size:11.5px;color:var(--bad);margin-top:5px}
 
   .dlg-rules{grid-column:1 / -1;border-top:1px solid var(--line);padding-top:10px;font-size:11.5px;color:var(--ink-3)}
   .dlg-rules summary{cursor:pointer;font-weight:600;color:var(--ink-2);font-size:11.5px;list-style:none;display:flex;align-items:center;gap:6px}
@@ -425,7 +413,7 @@
 
   /* ---------- Dialog ---------- */
   dialog{
-    width:min(560px,calc(100vw - 32px));
+    width:min(600px,calc(100vw - 32px));
     max-height:calc(100vh - 32px);
     overflow:auto;
     border:1px solid var(--line);border-radius:18px;padding:0;
@@ -433,25 +421,27 @@
     box-shadow:0 30px 70px -20px rgba(0,0,0,.5);
   }
   dialog::backdrop{background:rgba(10,12,18,.45);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
-  .dlg-head{padding:18px 20px 0}
-  .dlg-head h2{font-size:16px;font-weight:650;letter-spacing:-.01em}
+  .dlg-head{padding:20px 22px 0}
+  .dlg-head h2{font-size:17px;font-weight:650;letter-spacing:-.01em}
   .dlg-head p{font-size:12.5px;color:var(--ink-3);margin-top:2px}
-  .dlg-body{padding:16px 20px 4px;display:grid;grid-template-columns:1fr 1fr;gap:13px}
-  .field{display:flex;flex-direction:column;gap:5px;min-width:0}
+  .dlg-body{padding:18px 22px 4px;display:grid;grid-template-columns:1fr 1fr;gap:14px 16px}
+  .settings-section{grid-column:1 / -1;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;font-weight:650;color:var(--ink-3);margin-top:2px}
+  .field{display:flex;flex-direction:column;gap:6px;min-width:0}
   .field.wide{grid-column:1 / -1}
-  .field > span{font-size:11.5px;font-weight:600;color:var(--ink-2)}
-  .field .hint{font-size:11px;color:var(--ink-3);font-weight:400;line-height:1.35}
+  .field > span{font-size:12px;font-weight:600;color:var(--ink-2)}
   .field input,.field select{
-    width:100%;padding:8px 9px;border-radius:9px;border:1px solid var(--line-strong);
+    width:100%;padding:9px 10px;border-radius:9px;border:1px solid var(--line-strong);
     background:var(--panel-2);color:var(--ink);
   }
   .field input:focus,.field select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent)}
   .input-unit{position:relative}
   .input-unit input{padding-right:28px}
   .input-unit .iu{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--ink-3)}
+  .night-range{display:flex;align-items:center;gap:8px;color:var(--ink-3);font-size:12px}
+  .night-range input{flex:1;min-width:0}
   .dlg-foot{
     display:flex;align-items:center;gap:8px;flex-wrap:wrap;
-    padding:16px 20px 18px;border-top:1px solid var(--line);margin-top:14px;
+    padding:16px 22px 18px;border-top:1px solid var(--line);margin-top:16px;
   }
   .dlg-foot .grow{flex:1}
 
@@ -684,14 +674,15 @@
       </button>
 
       <div class="menu-wrap">
-        <button class="btn primary" id="exportBtn" type="button" aria-haspopup="true" aria-expanded="false" title="Télécharger une sauvegarde hors ligne">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"></path><path d="m7 10 5 5 5-5"></path><path d="M4 20h16"></path></svg>
-          <span class="btn-label">Exporter</span>
+        <button class="btn primary" id="exportBtn" type="button" aria-haspopup="true" aria-expanded="false" title="Exporter ou importer une sauvegarde">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h11l4 4v14H5z"></path><path d="M8 3v6h7V3"></path><rect x="8" y="13" width="8" height="5" rx="1"></rect></svg>
+          <span class="btn-label">Sauvegarde</span>
         </button>
         <div class="menu" id="exportMenu" hidden>
-          <button type="button" id="exportJsonBtn">Sauvegarde complète (JSON)</button>
-          <button type="button" id="exportCsvTop">Tableau des heures (CSV)</button>
+          <button type="button" id="exportJsonBtn">Exporter la sauvegarde (JSON)</button>
+          <button type="button" id="exportCsvTop">Exporter le tableau (CSV)</button>
           <button type="button" id="importMenuBtn">Importer une sauvegarde…</button>
+          <div class="menu-note" id="exportStatus" hidden></div>
         </div>
       </div>
 
@@ -851,10 +842,10 @@
 <dialog id="settingsDlg" aria-labelledby="settingsTitle">
   <form method="dialog" id="settingsForm">
     <div class="dlg-head">
-      <h2 id="settingsTitle">Réglages du calcul</h2>
-      <p>Les valeurs par défaut suivent votre règle de cumul.</p>
+      <h2 id="settingsTitle">Réglages</h2>
     </div>
     <div class="dlg-body">
+      <div class="settings-section wide">Calcul</div>
       <label class="field">
         <span>Seuil hebdomadaire</span>
         <div class="input-unit"><input name="threshold" type="number" min="0" max="168" step="0.5"><span class="iu">h</span></div>
@@ -869,10 +860,10 @@
       </label>
       <label class="field">
         <span>Plage de nuit</span>
-        <div style="display:flex;gap:6px;align-items:center;color:var(--ink-3);font-size:12px">
-          <input name="nightStart" type="time" step="900" style="flex:1;min-width:0">
+        <div class="night-range">
+          <input name="nightStart" type="time" step="900">
           <span>→</span>
-          <input name="nightEnd" type="time" step="900" style="flex:1;min-width:0">
+          <input name="nightEnd" type="time" step="900">
         </div>
       </label>
       <label class="field wide">
@@ -881,29 +872,12 @@
           <option value="sequential">Nuit d’abord, puis HS sur le total majoré</option>
           <option value="actual">HS sur heures réelles, nuit en repos</option>
         </select>
-        <span class="hint" id="modeHint"></span>
       </label>
 
       <div class="usual-editor wide">
         <div class="usual-title">Horaires habituels</div>
-        <p class="usual-hint">Cochez les périodes travaillées. Une journée qui s’écarte de ces horaires est signalée ; si le repos dépasse la durée habituelle du jour, elle passe en rouge.</p>
         <div class="usual-grid" id="usualGrid"></div>
         <p class="usual-error" id="usualError" hidden></p>
-      </div>
-
-      <div class="data-block">
-        <div class="db-title">Sauvegarde hors ligne</div>
-        <p>Vos heures sont enregistrées automatiquement dans ce navigateur et, avec un <b>compte cloud</b>, synchronisées sur vos appareils. Le bouton <b>Exporter</b> télécharge un fichier de secours à conserver hors ligne.</p>
-        <p class="db-status" id="dataStatus">Aucun export pour l’instant.</p>
-        <div class="db-actions">
-          <button type="button" class="btn" id="exportFromDlg">Exporter la sauvegarde</button>
-          <button type="button" class="btn" id="exportCsvBtn">Exporter en CSV</button>
-          <button type="button" class="btn" id="importFromDlg">Importer…</button>
-        </div>
-        <div class="db-reset">
-          <button type="button" class="btn ghost" id="resetSettingsBtn">Valeurs par défaut</button>
-          <button type="button" class="btn danger" id="resetDataBtn">Effacer mes heures</button>
-        </div>
       </div>
 
       <details class="dlg-rules">
@@ -920,6 +894,8 @@
       </details>
     </div>
     <div class="dlg-foot">
+      <button class="btn ghost" type="button" id="resetSettingsBtn">Valeurs par défaut</button>
+      <button class="btn danger" type="button" id="resetDataBtn">Effacer mes heures</button>
       <span class="grow"></span>
       <button class="btn" type="button" id="cancelSettingsBtn">Annuler</button>
       <button class="btn primary" value="apply" id="applySettingsBtn">Enregistrer</button>
@@ -1460,11 +1436,15 @@
   }
 
   function updateExportStatus(){
-    if (!els.dataStatus) return;
+    if (!els.exportStatus) return;
     var meta = readExportMeta();
-    els.dataStatus.textContent = meta && meta.at
-      ? 'Dernier export le ' + fmtSavedAt(meta.at) + '.'
-      : 'Aucun export pour l’instant.';
+    if (meta && meta.at){
+      els.exportStatus.textContent = 'Dernier export : ' + fmtSavedAt(meta.at);
+      els.exportStatus.hidden = false;
+    } else {
+      els.exportStatus.textContent = '';
+      els.exportStatus.hidden = true;
+    }
   }
 
   function exportBackup(){
@@ -1484,6 +1464,7 @@
 
   function toggleExportMenu(){
     var open = els.exportMenu.hidden;
+    if (open) updateExportStatus();
     els.exportMenu.hidden = !open;
     els.exportBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
   }
@@ -3103,7 +3084,6 @@
   /* ---------------- settings ---------------- */
   function openSettings(){
     fillSettingsForm();
-    updateExportStatus();
     els.settingsDlg.showModal();
   }
 
@@ -3212,15 +3192,7 @@
     f.elements.nightStart.value = state.settings.nightStart;
     f.elements.nightEnd.value = state.settings.nightEnd;
     f.elements.mode.value = state.settings.mode;
-    updateModeHint();
     renderUsualEditor();
-  }
-
-  function updateModeHint(){
-    var mode = els.settingsForm.elements.mode.value;
-    els.modeHint.textContent = mode === 'actual'
-      ? 'Exemple : 40 h réelles → 5 h supp. × 1,25 + 10 h de nuit × 0,25 = 8,75 h de repos.'
-      : 'Exemple : 30 h jour + 10 h nuit × 1,25 = 42,5 h → 7,5 h supp. × 1,25 = 9,375 h de repos.';
   }
 
   function applySettings(e){
@@ -3337,9 +3309,9 @@
       'syncCloudBtn', 'syncLocalBtn', 'syncLaterBtn',
       'shiftBody', 'shiftEmpty',
       'addShiftBtn', 'addShiftBtn2', 'restList', 'restEmpty', 'addRestBtn', 'restBody',
-      'settingsDlg', 'settingsForm', 'modeHint', 'resetDataBtn', 'resetSettingsBtn', 'cancelSettingsBtn',
-      'applySettingsBtn', 'importFile', 'toast', 'dataStatus', 'exportFromDlg',
-      'usualGrid', 'usualError', 'exportCsvBtn', 'importFromDlg', 'linkLayer'
+      'settingsDlg', 'settingsForm', 'resetDataBtn', 'resetSettingsBtn', 'cancelSettingsBtn',
+      'applySettingsBtn', 'importFile', 'toast',
+      'usualGrid', 'usualError', 'exportStatus', 'linkLayer'
     ].forEach(function(id){ els[id] = document.getElementById(id); });
   }
 
@@ -3395,9 +3367,6 @@
     els.exportJsonBtn.addEventListener('click', exportBackup);
     els.exportCsvTop.addEventListener('click', function(){ closeExportMenu(); exportCsv(); });
     els.importMenuBtn.addEventListener('click', function(){ closeExportMenu(); els.importFile.click(); });
-    els.exportFromDlg.addEventListener('click', exportBackup);
-    els.exportCsvBtn.addEventListener('click', function(){ exportCsv(); closeExportMenu(); });
-    els.importFromDlg.addEventListener('click', function(){ els.importFile.click(); });
     els.importFile.addEventListener('change', function(){
       if (els.importFile.files && els.importFile.files[0]) importJson(els.importFile.files[0]);
       els.importFile.value = '';
@@ -3410,7 +3379,6 @@
     });
 
     els.settingsBtn.addEventListener('click', openSettings);
-    els.settingsForm.elements.mode.addEventListener('change', updateModeHint);
     els.usualGrid.addEventListener('change', updateUsualDisabled);
     els.settingsForm.addEventListener('submit', function(e){
       var submitter = e.submitter;

@@ -55,19 +55,19 @@ Une nouvelle journée est préremplie avec l'horaire habituel du jour choisi. Si
 
 Si vous prenez du repos le même jour qu'une journée incomplète, les heures de repos sont rappelées sur la ligne de la journée (par exemple « + 5,00 h repos » en dessous des heures travaillées). Le lien entre l'absence et le repos est ainsi visible immédiatement.
 
-## Exporter — où sont mes données ?
+## Sauvegarde — où sont mes données ?
 
 Vos heures sont enregistrées **automatiquement dans votre navigateur** (stockage local). C'est ce qui permet de retrouver vos semaines en rouvrant la page.
 
 Avec un **compte cloud** (bouton **Compte**), une copie est aussi synchronisée dans votre projet Supabase : vous retrouvez vos données sur n'importe quel appareil en vous connectant. Le mode local reste disponible si vous n'êtes pas connecté.
 
-Le bouton **Exporter** (en haut) propose :
+Le bouton **Sauvegarde** (en haut) propose :
 
-- **Sauvegarde complète (JSON)** : télécharge `suivi-horaire-AAAA-MM-JJ.json`, contenant les réglages, les journées et les repos. C'est le fichier à conserver pour restaurer vos données.
-- **Tableau des heures (CSV)** : télécharge un tableur lisible par Excel, LibreOffice ou Numbers.
+- **Exporter la sauvegarde (JSON)** : télécharge `suivi-horaire-AAAA-MM-JJ.json`, contenant les réglages, les journées et les repos. C'est le fichier à conserver pour restaurer vos données.
+- **Exporter le tableau (CSV)** : télécharge un tableur lisible par Excel, LibreOffice ou Numbers.
 - **Importer une sauvegarde…** : remplace les données de l'appareil par un fichier JSON exporté précédemment.
 
-L'export est un simple téléchargement : il fonctionne sans autorisation particulière et ne modifie jamais les données existantes. La date du dernier export est visible dans **Réglages → Sauvegarde hors ligne**.
+L'export est un simple téléchargement : il fonctionne sans autorisation particulière et ne modifie jamais les données existantes. La date du dernier export apparaît en bas du menu **Sauvegarde**.
 
 ## Compte cloud (synchronisation)
 
@@ -81,7 +81,7 @@ Une fois connecté :
 - si deux appareils modifient la sauvegarde, une fenêtre de conflit permet de choisir la version à garder — **aucun écrasement silencieux** ;
 - hors ligne, les modifications restent locales et sont synchronisées au retour du réseau.
 
-Le bouton **Exporter** reste utile pour un fichier de secours hors ligne. **Se déconnecter et effacer cet appareil** retire les données locales sans supprimer la sauvegarde du compte.
+Le bouton **Sauvegarde** reste utile pour un fichier de secours hors ligne. **Se déconnecter et effacer cet appareil** retire les données locales sans supprimer la sauvegarde du compte.
 
 Les données sont stockées dans votre projet Supabase, accessibles uniquement par votre compte grâce aux règles **RLS**. La clé publique présente dans le code ne permet pas de lire les données d'un autre compte ; la clé `service_role` n'est jamais dans l'application. Comme pour tout service en ligne, l'hébergeur peut techniquement accéder aux données stockées : elles sont protégées en transit et par les règles d'accès, mais pas chiffrées de bout en bout.
 
@@ -94,8 +94,8 @@ Les données sont stockées dans votre projet Supabase, accessibles uniquement p
    - Vert = journée habituelle complète, orangé = journée incomplète ou décalée, violet = journée incomplète avec repos le même jour, rouge = repos supérieur à la durée habituelle du jour.
 2. **Repos pris** : saisissez les heures de repos posées ; elles sont déduites du solde et rappelées sur la ligne de la journée concernée.
 3. **Période** : choisissez **Semaine**, **Mois** ou **Année** en haut à droite. Les flèches ‹ › font défiler la période et « Aujourd'hui » revient à la période en cours.
-4. **Réglages** (roue dentée) : seuil, coefficients, plage de nuit, ordre de calcul, horaires habituels, règles détaillées, sauvegarde et export CSV.
-5. **Exporter** (en haut) : sauvegarde JSON hors ligne, export CSV ou import d'une sauvegarde.
+4. **Réglages** (roue dentée) : calcul, horaires habituels et règles détaillées.
+5. **Sauvegarde** (en haut) : exporter le JSON ou le CSV, ou importer une sauvegarde.
 6. **Compte** (icône personne) : connexion, création de compte, synchronisation cloud, déconnexion.
 
 En vue semaine, le détail du calcul est affiché sous les compteurs : base majorée, heures supp., repos acquis.
