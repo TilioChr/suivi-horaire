@@ -6,7 +6,7 @@ Petit calculateur d'heures pour un contrat de **35 h/semaine**, avec heures de n
 
 ## Lancer
 
-En ligne, ouvrez le lien ci-dessus. En local, double-cliquez sur **`index.html`** : l'application s'ouvre dans votre navigateur, sans installation ni connexion.
+En ligne, ouvrez le lien ci-dessus. En local, double-cliquez sur **`index.html`** : l'application s'ouvre dans votre navigateur, sans installation. Le mode local fonctionne hors ligne ; la synchronisation du compte cloud nécessite Internet.
 
 Pour la sauvegarde dans un fichier (bouton **Sauvegarder**), utilisez **Chrome ou Edge**. Les autres navigateurs continuent de fonctionner, mais la sauvegarde sera téléchargée au lieu d'écraser un fichier existant.
 
@@ -57,6 +57,8 @@ Si vous prenez du repos le même jour qu'une journée incomplète, les heures de
 
 Vos heures sont enregistrées **automatiquement dans votre navigateur** (stockage local). C'est ce qui permet de retrouver vos semaines en rouvrant la page.
 
+Avec un **compte cloud** (bouton **Compte**), une copie est aussi synchronisée dans votre projet Supabase : vous retrouvez vos données sur n'importe quel appareil en vous connectant. Le mode local reste disponible si vous n'êtes pas connecté.
+
 Le bouton **Sauvegarder** crée en plus un fichier de secours `sauvegarde-heures.json` :
 
 1. au premier clic, choisissez l'emplacement (par exemple le dossier `calculateur-heures`, à côté de `index.html`) ;
@@ -68,6 +70,24 @@ Le détail (nom du fichier, dernière sauvegarde) est visible dans **Réglages �
 
 > Si le navigateur ne permet pas d'écrire directement (Safari, Firefox), le fichier est téléchargé dans le dossier Téléchargements ; le navigateur peut alors créer des doublons au lieu d'écraser.
 
+## Compte cloud (synchronisation)
+
+Le bouton **Compte** (icône personne, en haut) permet de créer un compte avec **email + mot de passe**. L'email sert d'identifiant et reçoit le lien de confirmation et de réinitialisation du mot de passe. Supabase gère l'authentification : votre mot de passe est haché, jamais stocké par l'application.
+
+Une fois connecté :
+
+- les modifications sont synchronisées automatiquement (point vert sur le bouton Compte) ;
+- sur un autre appareil, connectez-vous avec le même compte pour retrouver la sauvegarde ;
+- si l'appareil et le compte contiennent chacun des données, une fenêtre demande laquelle conserver — **aucune fusion automatique** ;
+- si deux appareils modifient la sauvegarde, une fenêtre de conflit permet de choisir la version à garder — **aucun écrasement silencieux** ;
+- hors ligne, les modifications restent locales et sont synchronisées au retour du réseau.
+
+Le bouton **Sauvegarder** reste utile pour un fichier de secours. **Se déconnecter et effacer cet appareil** retire les données locales sans supprimer la sauvegarde du compte.
+
+Les données sont stockées dans votre projet Supabase, accessibles uniquement par votre compte grâce aux règles **RLS**. La clé publique présente dans le code ne permet pas de lire les données d'un autre compte ; la clé `service_role` n'est jamais dans l'application. Comme pour tout service en ligne, l'hébergeur peut techniquement accéder aux données stockées : elles sont protégées en transit et par les règles d'accès, mais pas chiffrées de bout en bout.
+
+> L'offre gratuite Supabase peut mettre le projet en pause après une longue inactivité ; les données restent.
+
 ## Utilisation
 
 1. **Journées** : « Ajouter une journée », puis le jour, les heures de début/fin, la pause en minutes et un libellé.
@@ -76,6 +96,7 @@ Le détail (nom du fichier, dernière sauvegarde) est visible dans **Réglages �
 2. **Repos pris** : saisissez les heures de repos posées ; elles sont déduites du solde et rappelées sur la ligne de la journée concernée.
 3. **Période** : choisissez **Semaine**, **Mois** ou **Année** en haut à droite. Les flèches ‹ › font défiler la période et « Aujourd'hui » revient à la période en cours.
 4. **Réglages** (roue dentée) : seuil, coefficients, plage de nuit, ordre de calcul, règles détaillées, sauvegarde et export CSV.
+5. **Compte** (icône personne) : connexion, création de compte, synchronisation cloud, déconnexion.
 
 En vue semaine, le détail du calcul est affiché sous les compteurs : base majorée, heures supp., repos acquis.
 
