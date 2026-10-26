@@ -40,7 +40,9 @@ Vos horaires habituels sont :
 - **mercredi** : 14h–18h ;
 - samedi et dimanche : pas d'horaire habituel.
 
-Une **journée complète** correspondant à ces horaires est affichée en **vert**. Une journée incomplète (par exemple 09h–12h seulement) ou décalée est affichée en **orangé**.
+Une **journée complète** correspondant à ces horaires est affichée en **vert**. Une journée incomplète (par exemple 09h–12h seulement) ou décalée est affichée en **orangé**, ou en **violet** si des heures de repos sont prises le même jour.
+
+Un **fil** relie, sur le bord gauche, la ligne de la journée à la ligne de repos du même jour.
 
 Deux façons de saisir une journée habituelle complète sont reconnues :
 
@@ -70,7 +72,7 @@ Le détail (nom du fichier, dernière sauvegarde) est visible dans **Réglages �
 
 1. **Journées** : « Ajouter une journée », puis le jour, les heures de début/fin, la pause en minutes et un libellé.
    - Une fin avant le début signifie que la vacation passe minuit.
-   - Vert = journée habituelle complète, orangé = journée incomplète ou décalée.
+   - Vert = journée habituelle complète, orangé = journée incomplète ou décalée, violet = journée incomplète avec repos le même jour.
 2. **Repos pris** : saisissez les heures de repos posées ; elles sont déduites du solde et rappelées sur la ligne de la journée concernée.
 3. **Semaine** : flèches ‹ › pour changer de semaine, « Aujourd'hui » pour revenir.
 4. **Réglages** (roue dentée) : seuil, coefficients, plage de nuit, ordre de calcul, règles détaillées, sauvegarde et export CSV.

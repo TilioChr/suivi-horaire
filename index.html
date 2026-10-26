@@ -162,7 +162,7 @@
   .dlg-rules li::marker{color:var(--ink-3)}
   .dlg-rules b{color:var(--ink-2);font-weight:600}
 
-  main{max-width:1140px;margin:0 auto;padding:22px;display:grid;gap:16px}
+  main{position:relative;max-width:1140px;margin:0 auto;padding:22px;display:grid;gap:16px}
 
   .card{
     background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
@@ -242,10 +242,18 @@
 
   tbody tr.row-usual{background:color-mix(in srgb, var(--good-soft) 78%, var(--panel))}
   tbody tr.row-unusual{background:color-mix(in srgb, var(--ot-soft) 78%, var(--panel))}
+  tbody tr.row-rest{background:color-mix(in srgb, var(--night-soft) 82%, var(--panel))}
   tbody tr.row-usual:hover{background:color-mix(in srgb, var(--good-soft) 92%, var(--panel-2))}
   tbody tr.row-unusual:hover{background:color-mix(in srgb, var(--ot-soft) 92%, var(--panel-2))}
+  tbody tr.row-rest:hover{background:color-mix(in srgb, var(--night-soft) 95%, var(--panel-2))}
   tbody tr.row-usual td:first-child{box-shadow:inset 3px 0 0 var(--good)}
   tbody tr.row-unusual td:first-child{box-shadow:inset 3px 0 0 var(--ot)}
+  tbody tr.row-rest td:first-child{box-shadow:inset 3px 0 0 var(--night)}
+  tbody tr.row-rest .day-rest-note{color:var(--night)}
+
+  .link-layer{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:4}
+  .link-layer path{fill:none;stroke:var(--night);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;opacity:.6}
+  .link-layer circle{fill:var(--night);stroke:var(--panel);stroke-width:1.4;opacity:.9}
 
   .cell-input input{
     width:100%;min-width:0;padding:6px 7px;border-radius:7px;
@@ -345,8 +353,10 @@
     .shift-table tbody tr:last-child{border-bottom:0}
     .shift-table tbody tr.row-usual{border-left:3px solid var(--good)}
     .shift-table tbody tr.row-unusual{border-left:3px solid var(--ot)}
+    .shift-table tbody tr.row-rest{border-left:3px solid var(--night)}
     .shift-table tbody tr.row-usual td:first-child,
-    .shift-table tbody tr.row-unusual td:first-child{box-shadow:none}
+    .shift-table tbody tr.row-unusual td:first-child,
+    .shift-table tbody tr.row-rest td:first-child{box-shadow:none}
     .shift-table tbody td{
       display:flex;flex-direction:column;gap:3px;width:auto;min-width:0;
       padding:0;border:0;text-align:left;
@@ -363,6 +373,7 @@
     .cell-input input{background:var(--panel-2);border-color:var(--line)}
     .shift-table tr.row-usual .cell-input input{background:color-mix(in srgb, var(--good-soft) 55%, var(--panel))}
     .shift-table tr.row-unusual .cell-input input{background:color-mix(in srgb, var(--ot-soft) 55%, var(--panel))}
+    .shift-table tr.row-rest .cell-input input{background:color-mix(in srgb, var(--night-soft) 55%, var(--panel))}
     .pause-wrap input{width:100%}
     .shift-table .row-warn{background:var(--ot-soft)}
   }
@@ -404,6 +415,7 @@
     .topbar{position:static;background:#fff;backdrop-filter:none}
     .actions,.today-btn,.nav-btn,.shift-table .c-del,.rest-del,.rest-row button,#addRest,.toast{display:none !important}
     .btn{display:none !important}
+    .link-layer{display:none !important}
     input[type=date]::-webkit-calendar-picker-indicator,input[type=time]::-webkit-calendar-picker-indicator{display:none !important}
     main{padding:0;gap:9px;max-width:none}
     .card{break-inside:avoid;box-shadow:none;border-color:#ccc}
@@ -488,7 +500,7 @@
       </button>
 
       <button class="btn icon-only" id="settingsBtn" type="button" title="Réglages">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.55 1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.55-1.1 1.7 1.7 0 0 0-.34-1.88l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 6.6h.08a1.7 1.7 0 0 0 1-1.55V5a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V11a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.4h-3.84a.48.48 0 0 0-.48.4l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96a.48.48 0 0 0-.59.22L2.74 8.87a.49.49 0 0 0 .12.61l2.03 1.58c-.05.3-.07.62-.07.94 0 .33.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.3.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.4.48.4h3.84c.24 0 .43-.16.48-.4l.36-2.54a7.03 7.03 0 0 0 1.62-.94l2.39.96c.22.09.47 0 .59-.22l1.92-3.32a.49.49 0 0 0-.12-.61l-2.03-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>
       </button>
     </div>
   </div>
@@ -618,6 +630,8 @@
       <div id="restList"></div>
     </div>
   </section>
+
+  <svg class="link-layer" id="linkLayer" aria-hidden="true"></svg>
 </main>
 
 <!-- Réglages -->
@@ -679,7 +693,7 @@
           <li><b>35 h/semaine</b> : au-delà, heures supplémentaires × 1,25 converties en repos.</li>
           <li><b>Nuit 00h00–06h00 × 1,25</b>, calculée avant les heures supplémentaires.</li>
           <li><b>Pause retirée en priorité sur le jour</b> ; la nuit reste entière.</li>
-          <li><b>Journée habituelle</b> : lun, mar, jeu, ven 09h–12h + 13h–18h · mer 14h–18h. Une journée incomplète ou décalée est en orange.</li>
+          <li><b>Journée habituelle</b> : lun, mar, jeu, ven 09h–12h + 13h–18h · mer 14h–18h. Une journée incomplète ou décalée est en orange, ou en violet si du repos est posé le même jour.</li>
           <li><b>Repos le même jour</b> : les heures de repos prises sont rappelées sur la ligne de la journée.</li>
           <li><b>Dimanche</b> non majoré ; <b>1er janv., 1er mai, 25 déc.</b> +100 % (payés).</li>
           <li><b>Trajet pro</b> entre deux lieux = travail ; domicile &gt; 3 h A/R = repos de l’excédent (max. 8 h/j).</li>
@@ -1394,18 +1408,20 @@
       }
       var s = findShift(tr.dataset.id);
       var usual = !!s && usualDays[s.date] === true;
+      var restH = s ? restHoursForDate(s.date) : 0;
+      var linked = !!s && !usual && restH > 0;
       workedEl.textContent = c.invalid ? '0h00' : fmtHM(c.worked);
       nightEl.textContent = fmtHM(c.night);
       tr.classList.toggle('row-warn', !!c.invalid);
       tr.classList.toggle('row-usual', usual);
-      tr.classList.toggle('row-unusual', !!s && !usual);
+      tr.classList.toggle('row-unusual', !!s && !usual && !linked);
+      tr.classList.toggle('row-rest', linked);
 
       var bits = [];
       if (c.invalid) bits.push('Horaires identiques : la journée ne compte pas.');
       else if (c.crosses) bits.push('Journée qui passe minuit.');
-      if (s) bits.push(usual ? 'Journée habituelle' : 'Journée inhabituelle');
+      if (s) bits.push(usual ? 'Journée habituelle' : (linked ? 'Journée inhabituelle avec repos' : 'Journée inhabituelle'));
 
-      var restH = s ? restHoursForDate(s.date) : 0;
       var firstOfDay = !!s && !seenDates[s.date];
       if (s) seenDates[s.date] = true;
       if (restEl){
@@ -1426,6 +1442,96 @@
     renderFormula(w);
     renderBar(w);
     renderBalanceChip(g);
+    scheduleLinks();
+  }
+
+  var linkTimer = 0;
+
+  function scheduleLinks(){
+    if (linkTimer) return;
+    linkTimer = setTimeout(function(){
+      linkTimer = 0;
+      renderLinks();
+    }, 20);
+  }
+
+  function renderLinks(){
+    var svg = els.linkLayer;
+    if (!svg) return;
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+    var main = document.querySelector('main');
+    if (!main) return;
+    var mainRect = main.getBoundingClientRect();
+    svg.setAttribute('width', mainRect.width);
+    svg.setAttribute('height', mainRect.height);
+
+    var shiftRows = els.shiftBody ? els.shiftBody.querySelectorAll('tr') : [];
+    var restRows = els.restList ? els.restList.querySelectorAll('.rest-row') : [];
+    if (!shiftRows.length || !restRows.length) return;
+
+    var shiftByDate = {};
+    Array.prototype.forEach.call(shiftRows, function(tr){
+      var s = findShift(tr.dataset.id);
+      if (!s || !s.date) return;
+      if (!shiftByDate[s.date]) shiftByDate[s.date] = tr;
+    });
+
+    var restByDate = {};
+    Array.prototype.forEach.call(restRows, function(row){
+      var r = findRest(row.dataset.id);
+      if (!r || !r.date) return;
+      if (!restByDate[r.date]) restByDate[r.date] = { row: row, hours: 0 };
+      restByDate[r.date].hours += Math.max(0, Number(r.hours) || 0);
+    });
+
+    var dates = Object.keys(shiftByDate).filter(function(d){
+      return restByDate[d] && restByDate[d].hours > 0;
+    }).sort();
+    if (!dates.length) return;
+
+    var shiftCard = shiftRows[0].closest('.card');
+    var restCard = restRows[0].closest('.card');
+    if (!shiftCard || !restCard) return;
+    var cardLeft = shiftCard.getBoundingClientRect().left - mainRect.left;
+    var narrow = mainRect.width < 900;
+    var baseOffset = 8;
+    var step = narrow ? 4 : 5;
+
+    dates.forEach(function(date, index){
+      var sRow = shiftByDate[date];
+      var rRow = restByDate[date].row;
+      var sr = sRow.getBoundingClientRect();
+      var rr = rRow.getBoundingClientRect();
+      var y1 = sr.top + sr.height / 2 - mainRect.top;
+      var y2 = rr.top + rr.height / 2 - mainRect.top;
+      if (y2 <= y1) return;
+
+      var railX = Math.max(narrow ? 4 : 6, cardLeft - baseOffset - index * step);
+      var x1 = cardLeft;
+      var x2 = rr.left - mainRect.left - 6;
+      var radius = Math.max(2, Math.min(6, (y2 - y1) / 2, Math.abs(x1 - railX) / 2));
+      var d = 'M ' + x1 + ' ' + y1 +
+        ' H ' + (railX + radius) +
+        ' Q ' + railX + ' ' + y1 + ' ' + railX + ' ' + (y1 + radius) +
+        ' V ' + (y2 - radius) +
+        ' Q ' + railX + ' ' + y2 + ' ' + (railX + radius) + ' ' + y2 +
+        ' H ' + x2;
+
+      var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', d);
+      svg.appendChild(path);
+      addLinkDot(svg, x1, y1);
+      addLinkDot(svg, x2, y2);
+    });
+  }
+
+  function addLinkDot(svg, cx, cy){
+    var dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    dot.setAttribute('cx', cx);
+    dot.setAttribute('cy', cy);
+    dot.setAttribute('r', 2.6);
+    svg.appendChild(dot);
   }
 
   function renderFormula(w){
@@ -1847,7 +1953,7 @@
       'addShiftBtn', 'addShiftBtn2', 'restList', 'restEmpty', 'addRestBtn', 'restBody',
       'settingsDlg', 'settingsForm', 'modeHint', 'resetDataBtn', 'resetSettingsBtn', 'cancelSettingsBtn',
       'applySettingsBtn', 'importFile', 'toast', 'dataStatus', 'saveFromDlg',
-      'chooseFileBtn', 'exportCsvBtn', 'importFromDlg'
+      'chooseFileBtn', 'exportCsvBtn', 'importFromDlg', 'linkLayer'
     ].forEach(function(id){ els[id] = document.getElementById(id); });
   }
 
@@ -1872,6 +1978,7 @@
     els.restList.addEventListener('click', onRestClick);
 
     els.printBtn.addEventListener('click', function(){ window.print(); });
+    window.addEventListener('resize', scheduleLinks);
     els.saveBtn.addEventListener('click', function(){ doSave(); });
     els.saveFromDlg.addEventListener('click', function(){ doSave(); });
     els.chooseFileBtn.addEventListener('click', function(){ pickNewFile(); });
@@ -1921,6 +2028,9 @@
     bind();
     renderAll();
     loadBackupHandle();
+    if (window.ResizeObserver){
+      new ResizeObserver(function(){ scheduleLinks(); }).observe(document.querySelector('main'));
+    }
     if (!storageOk) els.storageWarn.hidden = false;
   }
 
