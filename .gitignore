@@ -1,4 +1,5 @@
 .DS_Store
 sauvegarde-heures.json
 sauvegarde-*.json
+suivi-horaire-*.json
 heures-*.csv

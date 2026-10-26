@@ -8,7 +8,7 @@ Petit calculateur d'heures pour un contrat de **35 h/semaine**, avec heures de n
 
 En ligne, ouvrez le lien ci-dessus. En local, double-cliquez sur **`index.html`** : l'application s'ouvre dans votre navigateur, sans installation. Le mode local fonctionne hors ligne ; la synchronisation du compte cloud nécessite Internet.
 
-Pour la sauvegarde dans un fichier (bouton **Sauvegarder**), utilisez **Chrome ou Edge**. Les autres navigateurs continuent de fonctionner, mais la sauvegarde sera téléchargée au lieu d'écraser un fichier existant.
+L'export d'une sauvegarde fonctionne dans tous les navigateurs récents (Chrome, Edge, Safari, Firefox).
 
 ## Ce qui est calculé
 
@@ -34,7 +34,7 @@ Les horaires et les pauses sont arrondis au quart d'heure (00, 15, 30, 45). Une 
 
 ## Horaires habituels et couleurs
 
-Vos horaires habituels sont :
+Les horaires habituels se règlent dans **Réglages → Horaires habituels**. Pour chaque jour, cochez le matin et/ou l'après-midi, puis indiquez les heures. Les modifications s'appliquent immédiatement à toutes les semaines. Par défaut :
 
 - **lundi, mardi, jeudi, vendredi** : 09h–12h puis 13h–18h ;
 - **mercredi** : 14h–18h ;
@@ -42,33 +42,32 @@ Vos horaires habituels sont :
 
 Une **journée complète** correspondant à ces horaires est affichée en **vert**. Une journée incomplète (par exemple 09h–12h seulement) ou décalée est affichée en **orangé**, ou en **violet** si des heures de repos sont prises le même jour.
 
+**Repos trop long** : si le repos pris un jour dépasse la durée habituelle de ce jour, la journée, le repos et le fil de liaison passent en **rouge**. Exemple : avec un mercredi habituel de 14h–18h (4 h), 4 h 30 de repos ce jour-là déclenchent le rouge.
+
 Un **fil** relie, sur le bord gauche, la ligne de la journée à la ligne de repos du même jour.
 
 Deux façons de saisir une journée habituelle complète sont reconnues :
 
-- une seule ligne 09h00–18h00 avec 60 min de pause ;
-- ou deux lignes : 09h00–12h00 et 13h00–18h00, sans pause.
+- une seule ligne couvrant les deux périodes, avec une pause égale au temps non travaillé (par exemple 09h00–18h00 avec 60 min de pause) ;
+- ou deux lignes séparées (par exemple 09h00–12h00 et 13h00–18h00), sans pause.
 
 Une nouvelle journée est préremplie avec l'horaire habituel du jour choisi. Si vous changez la date d'une journée habituelle complète, les horaires s'adaptent automatiquement (par exemple un vendredi 09h–18h déplacé au mercredi devient 14h–18h).
 
 Si vous prenez du repos le même jour qu'une journée incomplète, les heures de repos sont rappelées sur la ligne de la journée (par exemple « + 5,00 h repos » en dessous des heures travaillées). Le lien entre l'absence et le repos est ainsi visible immédiatement.
 
-## Sauvegarder — où sont mes données ?
+## Exporter — où sont mes données ?
 
 Vos heures sont enregistrées **automatiquement dans votre navigateur** (stockage local). C'est ce qui permet de retrouver vos semaines en rouvrant la page.
 
 Avec un **compte cloud** (bouton **Compte**), une copie est aussi synchronisée dans votre projet Supabase : vous retrouvez vos données sur n'importe quel appareil en vous connectant. Le mode local reste disponible si vous n'êtes pas connecté.
 
-Le bouton **Sauvegarder** crée en plus un fichier de secours `sauvegarde-heures.json` :
+Le bouton **Exporter** (en haut) propose :
 
-1. au premier clic, choisissez l'emplacement (par exemple le dossier `calculateur-heures`, à côté de `index.html`) ;
-2. les clics suivants **écrasent ce même fichier**, sans redemander l'emplacement.
+- **Sauvegarde complète (JSON)** : télécharge `suivi-horaire-AAAA-MM-JJ.json`, contenant les réglages, les journées et les repos. C'est le fichier à conserver pour restaurer vos données.
+- **Tableau des heures (CSV)** : télécharge un tableur lisible par Excel, LibreOffice ou Numbers.
+- **Importer une sauvegarde…** : remplace les données de l'appareil par un fichier JSON exporté précédemment.
 
-Ce fichier JSON peut être partagé ou réimporté avec le bouton **Importer** (flèche en haut) ou depuis les réglages. Un point orange sur « Sauvegarder » signale des modifications pas encore écrites dans le fichier.
-
-Le détail (nom du fichier, dernière sauvegarde) est visible dans **Réglages → Où sont mes données ?**.
-
-> Si le navigateur ne permet pas d'écrire directement (Safari, Firefox), le fichier est téléchargé dans le dossier Téléchargements ; le navigateur peut alors créer des doublons au lieu d'écraser.
+L'export est un simple téléchargement : il fonctionne sans autorisation particulière et ne modifie jamais les données existantes. La date du dernier export est visible dans **Réglages → Sauvegarde hors ligne**.
 
 ## Compte cloud (synchronisation)
 
@@ -82,7 +81,7 @@ Une fois connecté :
 - si deux appareils modifient la sauvegarde, une fenêtre de conflit permet de choisir la version à garder — **aucun écrasement silencieux** ;
 - hors ligne, les modifications restent locales et sont synchronisées au retour du réseau.
 
-Le bouton **Sauvegarder** reste utile pour un fichier de secours. **Se déconnecter et effacer cet appareil** retire les données locales sans supprimer la sauvegarde du compte.
+Le bouton **Exporter** reste utile pour un fichier de secours hors ligne. **Se déconnecter et effacer cet appareil** retire les données locales sans supprimer la sauvegarde du compte.
 
 Les données sont stockées dans votre projet Supabase, accessibles uniquement par votre compte grâce aux règles **RLS**. La clé publique présente dans le code ne permet pas de lire les données d'un autre compte ; la clé `service_role` n'est jamais dans l'application. Comme pour tout service en ligne, l'hébergeur peut techniquement accéder aux données stockées : elles sont protégées en transit et par les règles d'accès, mais pas chiffrées de bout en bout.
 
@@ -92,11 +91,12 @@ Les données sont stockées dans votre projet Supabase, accessibles uniquement p
 
 1. **Journées** : « Ajouter une journée », puis le jour, les heures de début/fin, la pause en minutes et un libellé.
    - Une fin avant le début signifie que la vacation passe minuit.
-   - Vert = journée habituelle complète, orangé = journée incomplète ou décalée, violet = journée incomplète avec repos le même jour.
+   - Vert = journée habituelle complète, orangé = journée incomplète ou décalée, violet = journée incomplète avec repos le même jour, rouge = repos supérieur à la durée habituelle du jour.
 2. **Repos pris** : saisissez les heures de repos posées ; elles sont déduites du solde et rappelées sur la ligne de la journée concernée.
 3. **Période** : choisissez **Semaine**, **Mois** ou **Année** en haut à droite. Les flèches ‹ › font défiler la période et « Aujourd'hui » revient à la période en cours.
-4. **Réglages** (roue dentée) : seuil, coefficients, plage de nuit, ordre de calcul, règles détaillées, sauvegarde et export CSV.
-5. **Compte** (icône personne) : connexion, création de compte, synchronisation cloud, déconnexion.
+4. **Réglages** (roue dentée) : seuil, coefficients, plage de nuit, ordre de calcul, horaires habituels, règles détaillées, sauvegarde et export CSV.
+5. **Exporter** (en haut) : sauvegarde JSON hors ligne, export CSV ou import d'une sauvegarde.
+6. **Compte** (icône personne) : connexion, création de compte, synchronisation cloud, déconnexion.
 
 En vue semaine, le détail du calcul est affiché sous les compteurs : base majorée, heures supp., repos acquis.
 
@@ -104,7 +104,7 @@ En vue semaine, le détail du calcul est affiché sous les compteurs : base majo
 
 ## Vues mois et année
 
-- **Mois** : un calendrier affiche les heures travaillées de chaque jour, avec les mêmes couleurs que la vue semaine. Un clic sur un jour ouvre sa semaine.
+- **Mois** : un calendrier affiche les heures travaillées de chaque jour, avec les mêmes couleurs que la vue semaine (dont le rouge si le repos dépasse la durée habituelle du jour). Un clic sur un jour ouvre sa semaine.
 - **Année** : un tableau récapitule les 12 mois (travaillé, nuit, heures supp., repos acquis, repos pris, solde) et un total annuel. Un clic sur un mois l'ouvre.
 
 Les heures supplémentaires et le repos acquis restent calculés **semaine par semaine**, comme dans le contrat. Ils sont rattachés au **lundi** de la semaine : le total d'un mois peut donc inclure quelques jours du mois voisin lorsqu'une semaine est à cheval. Les heures travaillées, la nuit et le repos pris sont, eux, comptés à leur date.

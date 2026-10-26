@@ -139,8 +139,21 @@
   .icon-btn:hover{background:var(--bad-soft);color:var(--bad)}
   .icon-btn svg{width:15px;height:15px}
 
-  .save-btn{position:relative}
-  .save-dot{width:7px;height:7px;border-radius:50%;background:var(--ot);flex:none}
+  .menu-wrap{position:relative}
+  .menu{
+    position:absolute;top:calc(100% + 6px);right:0;z-index:40;
+    display:flex;flex-direction:column;min-width:220px;padding:5px;
+    border:1px solid var(--line-strong);border-radius:12px;
+    background:var(--panel);box-shadow:0 12px 30px -8px rgba(0,0,0,.28);
+  }
+  .menu[hidden]{display:none}
+  .menu button{
+    border:0;background:none;color:var(--ink);font:inherit;font-size:12.5px;
+    text-align:left;padding:8px 10px;border-radius:8px;cursor:pointer;white-space:nowrap;
+  }
+  .menu button:hover{background:var(--panel-2)}
+  .menu button + button{border-top:1px solid var(--line)}
+
   .account-btn{position:relative}
   .account-dot{position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:var(--ink-3);box-shadow:0 0 0 2px var(--panel)}
   .account-dot.ok{background:var(--good)}
@@ -167,6 +180,20 @@
   .sync-counts span{font-size:12.5px;color:var(--ink);font-variant-numeric:tabular-nums}
   .sync-counts .muted{display:block;font-size:10.5px;color:var(--ink-3);margin-top:2px}
   @media (max-width:560px){.sync-counts{grid-template-columns:1fr}}
+
+  .usual-editor{grid-column:1 / -1;border-top:1px solid var(--line);padding-top:12px;margin-top:2px}
+  .usual-title{font-size:11.5px;font-weight:600;color:var(--ink-2)}
+  .usual-hint{font-size:11px;color:var(--ink-3);line-height:1.45;margin:2px 0 8px}
+  .usual-grid{display:flex;flex-direction:column;gap:6px}
+  .usual-row{display:grid;grid-template-columns:58px 1fr 1fr;gap:8px;align-items:center}
+  .usual-day{font-size:12px;font-weight:600;color:var(--ink-2)}
+  .usual-block{display:flex;align-items:center;gap:3px;min-width:0}
+  .usual-block label{display:inline-flex;align-items:center;gap:3px;font-size:10px;color:var(--ink-3);white-space:nowrap}
+  .usual-block input[type=checkbox]{accent-color:var(--accent);width:13px;height:13px;margin:0}
+  .usual-block input[type=time]{width:76px;min-width:0;padding:4px 2px;border:1px solid var(--line);border-radius:6px;background:var(--panel-2);color:var(--ink);font-size:10.5px}
+  .usual-block input[type=time]:disabled{opacity:.35}
+  .usual-block .dash{color:var(--ink-3);font-size:9px}
+  .usual-error{font-size:11.5px;color:var(--bad);margin-top:3px}
 
   .data-block{
     grid-column:1 / -1;display:flex;flex-direction:column;gap:6px;
@@ -289,10 +316,16 @@
   tbody tr.row-unusual td:first-child{box-shadow:inset 3px 0 0 var(--ot)}
   tbody tr.row-rest td:first-child{box-shadow:inset 3px 0 0 var(--night)}
   tbody tr.row-rest .day-rest-note{color:var(--night)}
+  tbody tr.row-overrest{background:color-mix(in srgb, var(--bad-soft) 82%, var(--panel))}
+  tbody tr.row-overrest:hover{background:color-mix(in srgb, var(--bad-soft) 95%, var(--panel-2))}
+  tbody tr.row-overrest td:first-child{box-shadow:inset 3px 0 0 var(--bad)}
+  tbody tr.row-overrest .day-rest-note{color:var(--bad)}
 
   .link-layer{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:4}
   .link-layer path{fill:none;stroke:var(--night);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;opacity:.6}
   .link-layer circle{fill:var(--night);stroke:var(--panel);stroke-width:1.4;opacity:.9}
+  .link-layer path.link-overrest{stroke:var(--bad);opacity:.7}
+  .link-layer circle.link-overrest{fill:var(--bad)}
 
   .cell-input input{
     width:100%;min-width:0;padding:6px 7px;border-radius:7px;
@@ -326,6 +359,8 @@
   /* ---------- Repos ---------- */
   .rest-row{display:grid;grid-template-columns:136px 96px 1fr 34px;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}
   .rest-row:last-of-type{border-bottom:0}
+  .rest-row.over-rest{background:color-mix(in srgb, var(--bad-soft) 65%, transparent);border-radius:8px;padding-left:6px;padding-right:6px}
+  .rest-row.over-rest input{border-color:color-mix(in srgb, var(--bad) 38%, var(--line))}
   .rest-row input{
     width:100%;min-width:0;padding:7px 8px;border-radius:8px;
     border:1px solid var(--line);background:var(--panel-2);color:var(--ink);
@@ -360,6 +395,8 @@
   .cal-cell.cal-unusual{background:color-mix(in srgb,var(--ot-soft) 82%,var(--panel));border-color:color-mix(in srgb,var(--ot) 20%,var(--line))}
   .cal-cell.cal-rest{background:color-mix(in srgb,var(--night-soft) 86%,var(--panel));border-color:color-mix(in srgb,var(--night) 22%,var(--line))}
   .cal-cell.cal-restonly{background:color-mix(in srgb,var(--night-soft) 55%,var(--panel));border-color:color-mix(in srgb,var(--night) 18%,var(--line))}
+  .cal-cell.cal-overrest{background:color-mix(in srgb,var(--bad-soft) 82%,var(--panel));border-color:color-mix(in srgb,var(--bad) 24%,var(--line))}
+  .cal-cell.cal-overrest .cal-sub{color:var(--bad)}
   .cal-cell.cal-today{outline:2px solid var(--accent);outline-offset:-2px}
   .cal-cell:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
@@ -444,9 +481,11 @@
     .shift-table tbody tr.row-usual{border-left:3px solid var(--good)}
     .shift-table tbody tr.row-unusual{border-left:3px solid var(--ot)}
     .shift-table tbody tr.row-rest{border-left:3px solid var(--night)}
+    .shift-table tbody tr.row-overrest{border-left:3px solid var(--bad)}
     .shift-table tbody tr.row-usual td:first-child,
     .shift-table tbody tr.row-unusual td:first-child,
-    .shift-table tbody tr.row-rest td:first-child{box-shadow:none}
+    .shift-table tbody tr.row-rest td:first-child,
+    .shift-table tbody tr.row-overrest td:first-child{box-shadow:none}
     .shift-table tbody td{
       display:flex;flex-direction:column;gap:3px;width:auto;min-width:0;
       padding:0;border:0;text-align:left;
@@ -464,6 +503,7 @@
     .shift-table tr.row-usual .cell-input input{background:color-mix(in srgb, var(--good-soft) 55%, var(--panel))}
     .shift-table tr.row-unusual .cell-input input{background:color-mix(in srgb, var(--ot-soft) 55%, var(--panel))}
     .shift-table tr.row-rest .cell-input input{background:color-mix(in srgb, var(--night-soft) 55%, var(--panel))}
+    .shift-table tr.row-overrest .cell-input input{background:color-mix(in srgb, var(--bad-soft) 55%, var(--panel))}
     .pause-wrap input{width:100%}
     .shift-table .row-warn{background:var(--ot-soft)}
   }
@@ -525,7 +565,7 @@
     .balance-chip .bc-value{font-size:17px}
     .balance-chip .bc-sub{display:none}
     .btn .btn-label{display:none}
-    .save-btn .btn-label{display:inline}
+    #exportBtn .btn-label{display:inline}
     .btn.icon-only{padding:7px 9px}
     .week-title{min-width:0}
     .week-title .wt-main{font-size:14px}
@@ -539,6 +579,10 @@
     .rest-row{position:relative}
     .dlg-body{grid-template-columns:1fr}
     .field.wide{grid-column:auto}
+    .usual-row{grid-template-columns:1fr;gap:4px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+    .usual-row:last-child{border-bottom:0;padding-bottom:0}
+    .menu{left:0;right:auto;min-width:200px;max-width:calc(100vw - 22px)}
+    .menu button{white-space:normal}
     .bar-caption{flex-direction:column;gap:2px}
   }
 
@@ -639,15 +683,17 @@
         <span class="account-dot" id="accountDot" hidden></span>
       </button>
 
-      <button class="btn primary save-btn" id="saveBtn" type="button" title="Sauvegarder dans le fichier de sauvegarde (écrase la version précédente)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h11l4 4v14H5z"></path><path d="M8 3v6h7V3"></path><rect x="8" y="13" width="8" height="5" rx="1"></rect></svg>
-        <span class="btn-label">Sauvegarder</span>
-        <span class="save-dot" id="saveDot" hidden title="Modifications non encore sauvegardées dans le fichier"></span>
-      </button>
-
-      <button class="btn icon-only" id="importBtnTop" type="button" title="Importer une sauvegarde">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"></path><path d="m7 9 5-5 5 5"></path><path d="M4 20h16"></path></svg>
-      </button>
+      <div class="menu-wrap">
+        <button class="btn primary" id="exportBtn" type="button" aria-haspopup="true" aria-expanded="false" title="Télécharger une sauvegarde hors ligne">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"></path><path d="m7 10 5 5 5-5"></path><path d="M4 20h16"></path></svg>
+          <span class="btn-label">Exporter</span>
+        </button>
+        <div class="menu" id="exportMenu" hidden>
+          <button type="button" id="exportJsonBtn">Sauvegarde complète (JSON)</button>
+          <button type="button" id="exportCsvTop">Tableau des heures (CSV)</button>
+          <button type="button" id="importMenuBtn">Importer une sauvegarde…</button>
+        </div>
+      </div>
 
       <button class="btn icon-only" id="printBtn" type="button" title="Imprimer la semaine">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8" rx="1"></rect></svg>
@@ -662,7 +708,7 @@
 </header>
 
 <div class="storage-warn" id="storageWarn" hidden>
-  La sauvegarde locale du navigateur est indisponible. Utilisez le bouton <b>Sauvegarder</b> pour conserver vos heures dans un fichier.
+  La sauvegarde locale du navigateur est indisponible. Pensez à <b>exporter</b> une sauvegarde pour conserver vos heures.
 </div>
 
 <main>
@@ -838,13 +884,19 @@
         <span class="hint" id="modeHint"></span>
       </label>
 
+      <div class="usual-editor wide">
+        <div class="usual-title">Horaires habituels</div>
+        <p class="usual-hint">Cochez les périodes travaillées. Une journée qui s’écarte de ces horaires est signalée ; si le repos dépasse la durée habituelle du jour, elle passe en rouge.</p>
+        <div class="usual-grid" id="usualGrid"></div>
+        <p class="usual-error" id="usualError" hidden></p>
+      </div>
+
       <div class="data-block">
-        <div class="db-title">Où sont mes données ?</div>
-        <p>Vos heures sont enregistrées automatiquement dans ce navigateur. Avec un <b>compte cloud</b> (bouton Compte), elles sont aussi synchronisées dans votre compte Supabase, accessible uniquement par vous. Le bouton <b>Sauvegarder</b> écrit en plus un fichier JSON&nbsp;: choisissez une fois son emplacement (par exemple le dossier de l’application), puis chaque sauvegarde <b>écrase ce même fichier</b>.</p>
-        <p class="db-status" id="dataStatus">Aucune sauvegarde fichier pour l’instant.</p>
+        <div class="db-title">Sauvegarde hors ligne</div>
+        <p>Vos heures sont enregistrées automatiquement dans ce navigateur et, avec un <b>compte cloud</b>, synchronisées sur vos appareils. Le bouton <b>Exporter</b> télécharge un fichier de secours à conserver hors ligne.</p>
+        <p class="db-status" id="dataStatus">Aucun export pour l’instant.</p>
         <div class="db-actions">
-          <button type="button" class="btn" id="saveFromDlg">Sauvegarder maintenant</button>
-          <button type="button" class="btn" id="chooseFileBtn" hidden>Changer de fichier…</button>
+          <button type="button" class="btn" id="exportFromDlg">Exporter la sauvegarde</button>
           <button type="button" class="btn" id="exportCsvBtn">Exporter en CSV</button>
           <button type="button" class="btn" id="importFromDlg">Importer…</button>
         </div>
@@ -855,13 +907,13 @@
       </div>
 
       <details class="dlg-rules">
-        <summary>Règles appliquées et horaires habituels</summary>
+        <summary>Règles appliquées</summary>
         <ul>
           <li><b>35 h/semaine</b> : au-delà, heures supplémentaires × 1,25 converties en repos.</li>
           <li><b>Nuit 00h00–06h00 × 1,25</b>, calculée avant les heures supplémentaires.</li>
           <li><b>Pause retirée en priorité sur le jour</b> ; la nuit reste entière.</li>
-          <li><b>Journée habituelle</b> : lun, mar, jeu, ven 09h–12h + 13h–18h · mer 14h–18h. Une journée incomplète ou décalée est en orange, ou en violet si du repos est posé le même jour.</li>
-          <li><b>Repos le même jour</b> : les heures de repos prises sont rappelées sur la ligne de la journée.</li>
+          <li><b>Journée habituelle</b> : verte si elle correspond aux horaires définis ci-dessus, orange si elle s’en écarte, violette si du repos est posé le même jour.</li>
+          <li><b>Repos trop long</b> : si le repos pris un jour dépasse la durée habituelle de ce jour, la journée et le repos passent en rouge.</li>
           <li><b>Dimanche</b> non majoré ; <b>1er janv., 1er mai, 25 déc.</b> +100 % (payés).</li>
           <li><b>Trajet pro</b> entre deux lieux = travail ; domicile &gt; 3 h A/R = repos de l’excédent (max. 8 h/j).</li>
         </ul>
@@ -1009,42 +1061,114 @@
     return isoDate(startOfWeek(parseISODate(dateISO)));
   }
 
-  var USUAL_PRIMARY = {
-    1: { start: '09:00', end: '18:00', pause: 60 },
-    2: { start: '09:00', end: '18:00', pause: 60 },
-    3: { start: '14:00', end: '18:00', pause: 0 },
-    4: { start: '09:00', end: '18:00', pause: 60 },
-    5: { start: '09:00', end: '18:00', pause: 60 }
-  };
-  var USUAL_BLOCKS = {
-    1: [['09:00', '12:00', 0], ['13:00', '18:00', 0]],
-    2: [['09:00', '12:00', 0], ['13:00', '18:00', 0]],
-    3: [['14:00', '18:00', 0]],
-    4: [['09:00', '12:00', 0], ['13:00', '18:00', 0]],
-    5: [['09:00', '12:00', 0], ['13:00', '18:00', 0]]
-  };
+  function defaultUsual(){
+    var weekday = function(){
+      return {
+        morning: { start: '09:00', end: '12:00' },
+        afternoon: { start: '13:00', end: '18:00' }
+      };
+    };
+    return {
+      0: null,
+      1: weekday(),
+      2: weekday(),
+      3: { morning: null, afternoon: { start: '14:00', end: '18:00' } },
+      4: weekday(),
+      5: weekday(),
+      6: null
+    };
+  }
+
+  function normalizeUsualBlock(b){
+    if (!b || typeof b !== 'object') return null;
+    if (!/^\d{1,2}:\d{2}$/.test(b.start || '') || !/^\d{1,2}:\d{2}$/.test(b.end || '')) return null;
+    if (parseHM(b.end) <= parseHM(b.start)) return null;
+    return { start: b.start, end: b.end };
+  }
+
+  function normalizeUsual(raw){
+    var def = defaultUsual();
+    if (!raw || typeof raw !== 'object') return def;
+    var out = {};
+    for (var d = 0; d < 7; d++){
+      var src = raw[d];
+      if (src == null){ out[d] = null; continue; }
+      if (typeof src !== 'object'){ out[d] = def[d]; continue; }
+      var morning = normalizeUsualBlock(src.morning);
+      var afternoon = normalizeUsualBlock(src.afternoon);
+      out[d] = (morning || afternoon) ? { morning: morning, afternoon: afternoon } : null;
+    }
+    return out;
+  }
 
   function timesEqual(a, b){ return parseHM(a) === parseHM(b); }
 
-  function isUsualDay(shifts, dateISO){
+  function usualBlocksFor(dateISO, settings){
     var day = parseISODate(dateISO).getDay();
-    var primary = USUAL_PRIMARY[day];
-    if (!primary || !shifts || !shifts.length) return false;
+    var cfg = settings && settings.usual && settings.usual[day];
+    if (!cfg) return [];
+    var blocks = [];
+    if (cfg.morning) blocks.push({ start: cfg.morning.start, end: cfg.morning.end });
+    if (cfg.afternoon) blocks.push({ start: cfg.afternoon.start, end: cfg.afternoon.end });
+    blocks.sort(function(a, b){ return parseHM(a.start) - parseHM(b.start); });
+    return blocks;
+  }
+
+  function usualCombined(blocks){
+    if (!blocks || !blocks.length) return null;
+    var start = blocks[0].start;
+    var end = blocks[blocks.length - 1].end;
+    var worked = 0;
+    blocks.forEach(function(b){ worked += parseHM(b.end) - parseHM(b.start); });
+    var span = parseHM(end) - parseHM(start);
+    if (span <= 0 || worked <= 0) return null;
+    var pause = span - worked;
+    if (pause < 0) return null;
+    return { start: start, end: end, pause: pause };
+  }
+
+  function usualPrimaryFor(dateISO, settings){
+    var blocks = usualBlocksFor(dateISO, settings);
+    if (!blocks.length) return null;
+    if (blocks.length === 1) return { start: blocks[0].start, end: blocks[0].end, pause: 0 };
+    return usualCombined(blocks);
+  }
+
+  function usualDayMinutes(dateISO, settings){
+    var total = 0;
+    usualBlocksFor(dateISO, settings).forEach(function(b){ total += parseHM(b.end) - parseHM(b.start); });
+    return total;
+  }
+
+  function isOverRest(restHours, dateISO, settings){
+    var limit = usualDayMinutes(dateISO, settings) / 60;
+    return limit > 0 && (Number(restHours) || 0) > limit + 1e-9;
+  }
+
+  function isUsualDay(shifts, dateISO, settings){
+    var blocks = usualBlocksFor(dateISO, settings);
+    if (!blocks.length || !shifts || !shifts.length) return false;
     if (shifts.length === 1){
       var one = shifts[0];
-      return timesEqual(one.start, primary.start) &&
-        timesEqual(one.end, primary.end) &&
-        (Number(one.pause) || 0) === primary.pause;
+      if (blocks.length === 1){
+        return timesEqual(one.start, blocks[0].start) &&
+          timesEqual(one.end, blocks[0].end) &&
+          (Number(one.pause) || 0) === 0;
+      }
+      var comb = usualCombined(blocks);
+      return !!comb &&
+        timesEqual(one.start, comb.start) &&
+        timesEqual(one.end, comb.end) &&
+        (Number(one.pause) || 0) === comb.pause;
     }
-    var blocks = (USUAL_BLOCKS[day] || []).slice();
-    if (!blocks.length || shifts.length !== blocks.length) return false;
+    if (shifts.length !== blocks.length) return false;
     var remaining = blocks.slice();
     for (var i = 0; i < shifts.length; i++){
       var s = shifts[i];
       if ((Number(s.pause) || 0) !== 0) return false;
       var idx = -1;
       for (var j = 0; j < remaining.length; j++){
-        if (timesEqual(s.start, remaining[j][0]) && timesEqual(s.end, remaining[j][1])){ idx = j; break; }
+        if (timesEqual(s.start, remaining[j].start) && timesEqual(s.end, remaining[j].end)){ idx = j; break; }
       }
       if (idx < 0) return false;
       remaining.splice(idx, 1);
@@ -1052,13 +1176,13 @@
     return remaining.length === 0;
   }
 
-  function isPrimaryUsual(shift, dateISO){
-    var p = USUAL_PRIMARY[parseISODate(dateISO).getDay()];
+  function isPrimaryUsual(shift, dateISO, settings){
+    var p = usualPrimaryFor(dateISO, settings);
     return !!p && timesEqual(shift.start, p.start) && timesEqual(shift.end, p.end) && (Number(shift.pause) || 0) === p.pause;
   }
 
-  function defaultShiftTimes(dateISO){
-    var p = USUAL_PRIMARY[parseISODate(dateISO).getDay()];
+  function defaultShiftTimes(dateISO, settings){
+    var p = usualPrimaryFor(dateISO, settings);
     return p ? { start: p.start, end: p.end, pause: p.pause } : { start: '09:00', end: '18:00', pause: 60 };
   }
 
@@ -1189,7 +1313,8 @@
       nightCoef: 1.25,
       nightStart: '00:00',
       nightEnd: '06:00',
-      mode: 'sequential'
+      mode: 'sequential',
+      usual: defaultUsual()
     };
     if (!raw || typeof raw !== 'object') return d;
     var num = function(v, fb, min, max){
@@ -1203,6 +1328,7 @@
     if (/^\d{1,2}:\d{2}$/.test(raw.nightStart || '')) d.nightStart = raw.nightStart;
     if (/^\d{1,2}:\d{2}$/.test(raw.nightEnd || '')) d.nightEnd = raw.nightEnd;
     if (raw.mode === 'actual' || raw.mode === 'sequential') d.mode = raw.mode;
+    d.usual = normalizeUsual(raw.usual);
     return d;
   }
 
@@ -1300,62 +1426,17 @@
     setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
   }
 
-  /* ---------------- sauvegarde fichier ---------------- */
-  function openBackupDb(){
-    if (backupDbPromise) return backupDbPromise;
-    backupDbPromise = new Promise(function(resolve, reject){
-      if (!window.indexedDB){ reject(new Error('indexedDB indisponible')); return; }
-      var req = indexedDB.open(BACKUP_DB, 1);
-      req.onupgradeneeded = function(){
-        if (!req.result.objectStoreNames.contains(BACKUP_STORE)) req.result.createObjectStore(BACKUP_STORE);
-      };
-      req.onsuccess = function(){ resolve(req.result); };
-      req.onerror = function(){ reject(req.error); };
-    });
-    return backupDbPromise;
+  /* ---------------- export / import ---------------- */
+  var EXPORT_META_KEY = STORAGE_KEY + '.export';
+
+  function readExportMeta(){
+    try { return JSON.parse(localStorage.getItem(EXPORT_META_KEY) || 'null'); } catch (e){ return null; }
   }
 
-  function idbGet(key){
-    return openBackupDb().then(function(db){
-      return new Promise(function(resolve, reject){
-        var tx = db.transaction(BACKUP_STORE, 'readonly');
-        var req = tx.objectStore(BACKUP_STORE).get(key);
-        req.onsuccess = function(){ resolve(req.result || null); };
-        req.onerror = function(){ reject(req.error); };
-      });
-    });
-  }
-
-  function idbSet(key, value){
-    return openBackupDb().then(function(db){
-      return new Promise(function(resolve, reject){
-        var tx = db.transaction(BACKUP_STORE, 'readwrite');
-        tx.objectStore(BACKUP_STORE).put(value, key);
-        tx.oncomplete = function(){ resolve(true); };
-        tx.onerror = function(){ reject(tx.error); };
-      });
-    });
-  }
-
-  function idbDel(key){
-    return openBackupDb().then(function(db){
-      return new Promise(function(resolve, reject){
-        var tx = db.transaction(BACKUP_STORE, 'readwrite');
-        tx.objectStore(BACKUP_STORE).delete(key);
-        tx.oncomplete = function(){ resolve(true); };
-        tx.onerror = function(){ reject(tx.error); };
-      });
-    });
-  }
-
-  function readBackupMeta(){
-    try { return JSON.parse(localStorage.getItem(BACKUP_META_KEY) || 'null'); } catch (e){ return null; }
-  }
-
-  function writeBackupMeta(meta){
+  function writeExportMeta(meta){
     try {
-      if (meta) localStorage.setItem(BACKUP_META_KEY, JSON.stringify(meta));
-      else localStorage.removeItem(BACKUP_META_KEY);
+      if (meta) localStorage.setItem(EXPORT_META_KEY, JSON.stringify(meta));
+      else localStorage.removeItem(EXPORT_META_KEY);
     } catch (e){}
   }
 
@@ -1378,97 +1459,33 @@
     };
   }
 
-  function updateSaveUI(){
-    if (els.saveDot) els.saveDot.hidden = !dirty;
-    if (els.chooseFileBtn){
-      els.chooseFileBtn.hidden = !fileHandle;
-      els.chooseFileBtn.textContent = 'Changer de fichier…';
-    }
+  function updateExportStatus(){
     if (!els.dataStatus) return;
-    var parts = [];
-    if (fileHandle && fileHandle.name) parts.push('Fichier : <b>' + esc(fileHandle.name) + '</b>');
-    else if (backupMeta && backupMeta.name) parts.push('Dernière sauvegarde : <b>' + esc(backupMeta.name) + '</b>');
-    if (backupMeta && backupMeta.at) parts.push('le ' + fmtSavedAt(backupMeta.at));
-    var html = parts.length ? parts.join(' · ') : 'Aucune sauvegarde fichier pour l’instant.';
-    if (!('showSaveFilePicker' in window)) {
-      html += '<br>Ce navigateur ne permet pas d’écraser un fichier : la sauvegarde sera téléchargée.';
-    }
-    if (dirty) html += '<br><span style="color:var(--ot)">Des modifications ne sont pas encore dans le fichier de sauvegarde.</span>';
-    els.dataStatus.innerHTML = html;
+    var meta = readExportMeta();
+    els.dataStatus.textContent = meta && meta.at
+      ? 'Dernier export le ' + fmtSavedAt(meta.at) + '.'
+      : 'Aucun export pour l’instant.';
   }
 
-  function markSaved(name, message){
-    backupMeta = { name: name, at: new Date().toISOString() };
-    writeBackupMeta(backupMeta);
-    dirty = false;
-    updateSaveUI();
-    toast(message || ('Sauvegarde écrite : ' + name));
+  function exportBackup(){
+    var name = 'suivi-horaire-' + isoDate(new Date()) + '.json';
+    download(name, JSON.stringify(backupPayload(), null, 2), 'application/json');
+    writeExportMeta({ at: new Date().toISOString() });
+    updateExportStatus();
+    closeExportMenu();
+    toast('Sauvegarde téléchargée');
   }
 
-  function fallbackSave(json){
-    download('sauvegarde-heures.json', json, 'application/json');
-    markSaved('sauvegarde-heures.json', 'Fichier téléchargé (le navigateur ne peut pas écraser l’ancien)');
+  function closeExportMenu(){
+    if (!els.exportMenu) return;
+    els.exportMenu.hidden = true;
+    els.exportBtn.setAttribute('aria-expanded', 'false');
   }
 
-  async function doSave(){
-    var json = JSON.stringify(backupPayload(), null, 2);
-    if (!('showSaveFilePicker' in window)){ fallbackSave(json); return; }
-
-    try {
-      if (!fileHandle){
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'sauvegarde-heures.json',
-          types: [{ description: 'Sauvegarde Suivi Horaire', accept: { 'application/json': ['.json'] } }]
-        });
-        idbSet('backup', fileHandle).catch(function(){});
-      } else {
-        var opts = { mode: 'readwrite' };
-        var perm = 'granted';
-        if (fileHandle.queryPermission) perm = await fileHandle.queryPermission(opts);
-        if (perm !== 'granted' && fileHandle.requestPermission) perm = await fileHandle.requestPermission(opts);
-        if (perm !== 'granted'){ toast('Autorisation d’écriture refusée'); return; }
-      }
-
-      var writable = await fileHandle.createWritable();
-      await writable.write(json);
-      await writable.close();
-      markSaved(fileHandle.name || 'sauvegarde-heures.json');
-    } catch (err){
-      if (err && err.name === 'AbortError') return;
-      if (err && err.name === 'NotFoundError'){
-        fileHandle = null;
-        idbDel('backup').catch(function(){});
-        writeBackupMeta(null);
-        backupMeta = null;
-        updateSaveUI();
-        toast('Fichier introuvable — choisissez un nouvel emplacement');
-        return;
-      }
-      if (err && (err.name === 'SecurityError' || err.name === 'NotSupportedError')){
-        fallbackSave(json);
-        return;
-      }
-      console.error(err);
-      toast('Sauvegarde impossible (' + (err && err.name ? err.name : 'erreur') + ')');
-    }
-  }
-
-  function pickNewFile(){
-    fileHandle = null;
-    backupMeta = null;
-    writeBackupMeta(null);
-    idbDel('backup').catch(function(){});
-    updateSaveUI();
-    doSave();
-  }
-
-  function loadBackupHandle(){
-    backupMeta = readBackupMeta();
-    updateSaveUI();
-    if (!('showSaveFilePicker' in window) || !window.indexedDB) return;
-    idbGet('backup').then(function(handle){
-      if (handle && handle.name){ fileHandle = handle; updateSaveUI(); }
-    }).catch(function(){});
+  function toggleExportMenu(){
+    var open = els.exportMenu.hidden;
+    els.exportMenu.hidden = !open;
+    els.exportBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
   }
 
   var els = {};
@@ -1480,13 +1497,6 @@
   var viewMode = 'week';
   var storageOk = true;
   var toastTimer = null;
-  var fileHandle = null;
-  var backupMeta = null;
-  var dirty = false;
-  var BACKUP_DB = 'suivi-horaire-fs';
-  var BACKUP_STORE = 'handles';
-  var BACKUP_META_KEY = STORAGE_KEY + '.backup';
-  var backupDbPromise = null;
 
   /* ---------------- compte cloud ---------------- */
   var SUPABASE_URL = 'https://tohucrrmjezlriasjxvo.supabase.co';
@@ -1527,9 +1537,7 @@
       storageOk = false;
     }
     if (els.storageWarn) els.storageWarn.hidden = storageOk;
-    dirty = true;
     if (!suppressCloud) markLocalDirty();
-    updateSaveUI();
   }
 
   function load(){
@@ -1583,7 +1591,8 @@
     var def = normalizeSettings(null);
     return cur.threshold === def.threshold && cur.otCoef === def.otCoef &&
       cur.nightCoef === def.nightCoef && cur.nightStart === def.nightStart &&
-      cur.nightEnd === def.nightEnd && cur.mode === def.mode;
+      cur.nightEnd === def.nightEnd && cur.mode === def.mode &&
+      JSON.stringify(cur.usual) === JSON.stringify(def.usual);
   }
 
   function stateSummary(s){
@@ -1875,9 +1884,7 @@
     if (currentUser){
       writeSyncMeta({ userId: currentUser.id, revision: row.revision, dirty: false, syncedAt: new Date().toISOString() });
     }
-    dirty = true;
     renderAll();
-    updateSaveUI();
     setSyncStatus('synced');
     updateAccountUI();
     if (els.syncDlg && els.syncDlg.open) els.syncDlg.close();
@@ -2219,9 +2226,7 @@
       suppressCloud = false;
       cloudDirty = false;
       cloudReady = false;
-      dirty = true;
       renderAll();
-      updateSaveUI();
     }
     updateAccountUI();
     toast(clearDevice ? 'Déconnecté et données locales effacées' : 'Déconnecté');
@@ -2406,8 +2411,10 @@
     els.restEmpty.hidden = list.length > 0;
     list.forEach(function(r){
       var row = document.createElement('div');
-      row.className = 'rest-row';
+      var overRest = isOverRest(restHoursForDate(r.date), r.date, state.settings);
+      row.className = 'rest-row' + (overRest ? ' over-rest' : '');
       row.dataset.id = r.id;
+      if (overRest) row.title = 'Repos supérieurs à la durée habituelle de ce jour';
       row.innerHTML =
         '<input type="date" value="' + esc(r.date) + '" data-field="date" aria-label="Date du repos">' +
         '<div class="rest-hours"><input type="number" min="0" step="0.25" value="' + esc(r.hours) + '" data-field="hours" aria-label="Heures de repos"><span>h</span></div>' +
@@ -2431,7 +2438,7 @@
     });
     var usualDays = {};
     Object.keys(dayGroups).forEach(function(dateISO){
-      usualDays[dateISO] = isUsualDay(dayGroups[dateISO], dateISO);
+      usualDays[dateISO] = isUsualDay(dayGroups[dateISO], dateISO, state.settings);
     });
     var seenDates = {};
 
@@ -2451,17 +2458,22 @@
       var usual = !!s && usualDays[s.date] === true;
       var restH = s ? restHoursForDate(s.date) : 0;
       var linked = !!s && !usual && restH > 0;
+      var overRest = !!s && isOverRest(restH, s.date, state.settings);
       workedEl.textContent = c.invalid ? '0h00' : fmtHM(c.worked);
       nightEl.textContent = fmtHM(c.night);
       tr.classList.toggle('row-warn', !!c.invalid);
-      tr.classList.toggle('row-usual', usual);
-      tr.classList.toggle('row-unusual', !!s && !usual && !linked);
-      tr.classList.toggle('row-rest', linked);
+      tr.classList.toggle('row-overrest', overRest);
+      tr.classList.toggle('row-usual', !overRest && usual);
+      tr.classList.toggle('row-unusual', !overRest && !!s && !usual && !linked);
+      tr.classList.toggle('row-rest', !overRest && linked);
 
       var bits = [];
       if (c.invalid) bits.push('Horaires identiques : la journée ne compte pas.');
       else if (c.crosses) bits.push('Journée qui passe minuit.');
-      if (s) bits.push(usual ? 'Journée habituelle' : (linked ? 'Journée inhabituelle avec repos' : 'Journée inhabituelle'));
+      if (s) {
+        if (overRest) bits.push('Repos supérieurs à l’horaire habituel (' + fmtH(usualDayMinutes(s.date, state.settings) / 60) + ')');
+        else bits.push(usual ? 'Journée habituelle' : (linked ? 'Journée inhabituelle avec repos' : 'Journée inhabituelle'));
+      }
 
       var firstOfDay = !!s && !seenDates[s.date];
       if (s) seenDates[s.date] = true;
@@ -2478,6 +2490,13 @@
         }
       }
       tr.title = bits.join(' · ');
+    });
+
+    Array.prototype.forEach.call(els.restList.querySelectorAll('.rest-row'), function(row){
+      var r = findRest(row.dataset.id);
+      var over = !!r && isOverRest(restHoursForDate(r.date), r.date, state.settings);
+      row.classList.toggle('over-rest', over);
+      row.title = over ? 'Repos supérieurs à la durée habituelle de ce jour' : '';
     });
 
     renderFormula(w);
@@ -2567,17 +2586,20 @@
 
       var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       path.setAttribute('d', d);
+      var overRest = isOverRest(restByDate[date].hours, date, state.settings);
+      if (overRest) path.setAttribute('class', 'link-overrest');
       svg.appendChild(path);
-      addLinkDot(svg, x1, y1);
-      addLinkDot(svg, x2, y2);
+      addLinkDot(svg, x1, y1, overRest);
+      addLinkDot(svg, x2, y2, overRest);
     });
   }
 
-  function addLinkDot(svg, cx, cy){
+  function addLinkDot(svg, cx, cy, overRest){
     var dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     dot.setAttribute('cx', cx);
     dot.setAttribute('cy', cy);
     dot.setAttribute('r', 2.6);
+    if (overRest) dot.setAttribute('class', 'link-overrest');
     svg.appendChild(dot);
   }
 
@@ -2657,9 +2679,11 @@
         night += c.night;
       });
       var rest = restHoursForDate(dateISO);
-      var usual = dayShifts.length ? isUsualDay(dayShifts, dateISO) : false;
+      var usual = dayShifts.length ? isUsualDay(dayShifts, dateISO, state.settings) : false;
+      var overRest = isOverRest(rest, dateISO, state.settings);
       var status = '';
-      if (dayShifts.length) status = usual ? 'cal-usual' : (rest > 0 ? 'cal-rest' : 'cal-unusual');
+      if (overRest) status = 'cal-overrest';
+      else if (dayShifts.length) status = usual ? 'cal-usual' : (rest > 0 ? 'cal-rest' : 'cal-unusual');
       else if (rest > 0) status = 'cal-restonly';
       var classes = 'cal-cell' + (status ? ' ' + status : '') + (dateISO === todayISO ? ' cal-today' : '');
       var dateLabel = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }).format(dateObj);
@@ -2667,7 +2691,8 @@
       if (worked > 0) bits.push(fmtH(worked) + ' travaillées');
       if (night > 0) bits.push(fmtH(night) + ' de nuit');
       if (rest > 0) bits.push(fmtH(rest) + ' de repos');
-      if (dayShifts.length) bits.push(usual ? 'journée habituelle' : (rest > 0 ? 'journée inhabituelle avec repos' : 'journée inhabituelle'));
+      if (overRest) bits.push('repos supérieurs à l’horaire habituel');
+      else if (dayShifts.length) bits.push(usual ? 'journée habituelle' : (rest > 0 ? 'journée inhabituelle avec repos' : 'journée inhabituelle'));
       bits.push('ouvrir la semaine');
       var title = bits.join(' · ');
       html += '<button type="button" class="' + classes + '" data-date="' + dateISO + '" title="' + esc(title) + '" aria-label="' + esc(title) + '">';
@@ -2862,10 +2887,10 @@
       return;
     }
     var oldDate = input.defaultValue || s.date;
-    var wasPrimary = isPrimaryUsual({ date: oldDate, start: s.start, end: s.end, pause: s.pause }, oldDate);
+    var wasPrimary = isPrimaryUsual({ date: oldDate, start: s.start, end: s.end, pause: s.pause }, oldDate, state.settings);
     s.date = input.value;
     if (wasPrimary){
-      var np = USUAL_PRIMARY[parseISODate(s.date).getDay()];
+      var np = usualPrimaryFor(s.date, state.settings);
       if (np){
         s.start = np.start;
         s.end = np.end;
@@ -2899,7 +2924,7 @@
     var today = new Date();
     var todayISO = isoDate(today);
     var date = weekKeyOf(todayISO) === viewWeek ? todayISO : viewWeek;
-    var t = defaultShiftTimes(date);
+    var t = defaultShiftTimes(date, state.settings);
     state.shifts.push({
       id: uid(),
       date: date,
@@ -3077,8 +3102,105 @@
   /* ---------------- settings ---------------- */
   function openSettings(){
     fillSettingsForm();
-    updateSaveUI();
+    updateExportStatus();
     els.settingsDlg.showModal();
+  }
+
+  var USUAL_DAY_ORDER = [1, 2, 3, 4, 5, 6, 0];
+  var USUAL_DAY_LABELS = { 0: 'Dim', 1: 'Lun', 2: 'Mar', 3: 'Mer', 4: 'Jeu', 5: 'Ven', 6: 'Sam' };
+  var USUAL_DAY_NAMES = { 0: 'Dimanche', 1: 'Lundi', 2: 'Mardi', 3: 'Mercredi', 4: 'Jeudi', 5: 'Vendredi', 6: 'Samedi' };
+  var USUAL_SLOT_LABELS = { morning: 'Matin', afternoon: 'Après-midi' };
+  var USUAL_SLOT_DEFAULTS = {
+    morning: { start: '09:00', end: '12:00' },
+    afternoon: { start: '13:00', end: '18:00' }
+  };
+
+  function usualBlockHtml(day, slot, block){
+    var def = USUAL_SLOT_DEFAULTS[slot];
+    var start = block ? block.start : def.start;
+    var end = block ? block.end : def.end;
+    var label = USUAL_SLOT_LABELS[slot];
+    return '<div class="usual-block" data-slot="' + slot + '">' +
+      '<label title="' + label + '"><input type="checkbox" data-role="on"' + (block ? ' checked' : '') + '>' + label + '</label>' +
+      '<input type="time" step="900" data-role="start" value="' + esc(start) + '" aria-label="' + USUAL_DAY_NAMES[day] + ' ' + label + ' début">' +
+      '<span class="dash">–</span>' +
+      '<input type="time" step="900" data-role="end" value="' + esc(end) + '" aria-label="' + USUAL_DAY_NAMES[day] + ' ' + label + ' fin">' +
+      '</div>';
+  }
+
+  function renderUsualEditor(){
+    if (!els.usualGrid) return;
+    var usual = (state.settings && state.settings.usual) || normalizeUsual(null);
+    var html = '';
+    USUAL_DAY_ORDER.forEach(function(day){
+      var cfg = usual[day] || {};
+      html += '<div class="usual-row" data-day="' + day + '">' +
+        '<span class="usual-day">' + USUAL_DAY_LABELS[day] + '</span>' +
+        usualBlockHtml(day, 'morning', cfg.morning) +
+        usualBlockHtml(day, 'afternoon', cfg.afternoon) +
+        '</div>';
+    });
+    els.usualGrid.innerHTML = html;
+    updateUsualDisabled();
+    setUsualError('');
+  }
+
+  function updateUsualDisabled(){
+    if (!els.usualGrid) return;
+    Array.prototype.forEach.call(els.usualGrid.querySelectorAll('.usual-block'), function(block){
+      var on = block.querySelector('[data-role="on"]').checked;
+      block.querySelector('[data-role="start"]').disabled = !on;
+      block.querySelector('[data-role="end"]').disabled = !on;
+      block.classList.toggle('off', !on);
+    });
+  }
+
+  function setUsualError(text){
+    if (!els.usualError) return;
+    els.usualError.textContent = text || '';
+    els.usualError.hidden = !text;
+  }
+
+  function readUsualEditor(){
+    var usual = {};
+    Array.prototype.forEach.call(els.usualGrid.querySelectorAll('.usual-row'), function(row){
+      var day = Number(row.dataset.day);
+      var cfg = { morning: null, afternoon: null };
+      Array.prototype.forEach.call(row.querySelectorAll('.usual-block'), function(block){
+        if (!block.querySelector('[data-role="on"]').checked) return;
+        cfg[block.dataset.slot] = {
+          start: block.querySelector('[data-role="start"]').value,
+          end: block.querySelector('[data-role="end"]').value
+        };
+      });
+      usual[day] = (cfg.morning || cfg.afternoon) ? cfg : null;
+    });
+    return usual;
+  }
+
+  function validateUsualEditor(){
+    var usual = readUsualEditor();
+    var error = '';
+    USUAL_DAY_ORDER.forEach(function(day){
+      if (error) return;
+      var cfg = usual[day];
+      if (!cfg) return;
+      var morning = cfg.morning;
+      var afternoon = cfg.afternoon;
+      if (morning && (!morning.start || !morning.end || parseHM(morning.end) <= parseHM(morning.start))){
+        error = USUAL_DAY_NAMES[day] + ' : l’heure de fin du matin doit être après le début.';
+        return;
+      }
+      if (afternoon && (!afternoon.start || !afternoon.end || parseHM(afternoon.end) <= parseHM(afternoon.start))){
+        error = USUAL_DAY_NAMES[day] + ' : l’heure de fin de l’après-midi doit être après le début.';
+        return;
+      }
+      if (morning && afternoon && parseHM(afternoon.start) < parseHM(morning.end)){
+        error = USUAL_DAY_NAMES[day] + ' : le matin et l’après-midi se chevauchent.';
+      }
+    });
+    setUsualError(error);
+    return { usual: usual, error: error };
   }
 
   function fillSettingsForm(){
@@ -3090,6 +3212,7 @@
     f.elements.nightEnd.value = state.settings.nightEnd;
     f.elements.mode.value = state.settings.mode;
     updateModeHint();
+    renderUsualEditor();
   }
 
   function updateModeHint(){
@@ -3100,7 +3223,11 @@
   }
 
   function applySettings(e){
-    // Laisse le dialogue se fermer via method="dialog"
+    var usualCheck = validateUsualEditor();
+    if (usualCheck.error){
+      if (e) e.preventDefault();
+      return;
+    }
     var f = els.settingsForm;
     var v = function(name){
       var n = Number(String(f.elements[name].value).replace(',', '.'));
@@ -3115,7 +3242,8 @@
       nightCoef: nightCoef,
       nightStart: f.elements.nightStart.value || '00:00',
       nightEnd: f.elements.nightEnd.value || '06:00',
-      mode: f.elements.mode.value === 'actual' ? 'actual' : 'sequential'
+      mode: f.elements.mode.value === 'actual' ? 'actual' : 'sequential',
+      usual: usualCheck.usual
     };
     save();
     renderAll();
@@ -3195,7 +3323,7 @@
   function cacheEls(){
     [
       'storageWarn', 'balanceChip', 'balanceValue', 'balanceSub', 'printBtn',
-      'saveBtn', 'saveDot', 'importBtnTop', 'settingsBtn',
+      'exportBtn', 'exportMenu', 'exportJsonBtn', 'exportCsvTop', 'importMenuBtn', 'settingsBtn',
       'prevWeek', 'nextWeek', 'weekHeading', 'weekRange', 'todayBtn',
       'statWorked', 'statWorkedSub', 'statNight', 'statOt', 'statOtSub',
       'statCredit', 'statCreditSub', 'statTaken', 'statTakenSub', 'statBalance', 'statBalanceLabel', 'statBalanceCard',
@@ -3209,8 +3337,8 @@
       'shiftBody', 'shiftEmpty',
       'addShiftBtn', 'addShiftBtn2', 'restList', 'restEmpty', 'addRestBtn', 'restBody',
       'settingsDlg', 'settingsForm', 'modeHint', 'resetDataBtn', 'resetSettingsBtn', 'cancelSettingsBtn',
-      'applySettingsBtn', 'importFile', 'toast', 'dataStatus', 'saveFromDlg',
-      'chooseFileBtn', 'exportCsvBtn', 'importFromDlg', 'linkLayer'
+      'applySettingsBtn', 'importFile', 'toast', 'dataStatus', 'exportFromDlg',
+      'usualGrid', 'usualError', 'exportCsvBtn', 'importFromDlg', 'linkLayer'
     ].forEach(function(id){ els[id] = document.getElementById(id); });
   }
 
@@ -3258,19 +3386,31 @@
 
     els.printBtn.addEventListener('click', function(){ window.print(); });
     window.addEventListener('resize', scheduleLinks);
-    els.saveBtn.addEventListener('click', function(){ doSave(); });
-    els.saveFromDlg.addEventListener('click', function(){ doSave(); });
-    els.chooseFileBtn.addEventListener('click', function(){ pickNewFile(); });
-    els.exportCsvBtn.addEventListener('click', exportCsv);
-    els.importBtnTop.addEventListener('click', function(){ els.importFile.click(); });
+
+    els.exportBtn.addEventListener('click', function(e){
+      e.stopPropagation();
+      toggleExportMenu();
+    });
+    els.exportJsonBtn.addEventListener('click', exportBackup);
+    els.exportCsvTop.addEventListener('click', function(){ closeExportMenu(); exportCsv(); });
+    els.importMenuBtn.addEventListener('click', function(){ closeExportMenu(); els.importFile.click(); });
+    els.exportFromDlg.addEventListener('click', exportBackup);
+    els.exportCsvBtn.addEventListener('click', function(){ exportCsv(); closeExportMenu(); });
     els.importFromDlg.addEventListener('click', function(){ els.importFile.click(); });
     els.importFile.addEventListener('change', function(){
       if (els.importFile.files && els.importFile.files[0]) importJson(els.importFile.files[0]);
       els.importFile.value = '';
     });
+    document.addEventListener('click', function(e){
+      if (els.exportMenu && !els.exportMenu.hidden && !e.target.closest('.menu-wrap')) closeExportMenu();
+    });
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape') closeExportMenu();
+    });
 
     els.settingsBtn.addEventListener('click', openSettings);
     els.settingsForm.elements.mode.addEventListener('change', updateModeHint);
+    els.usualGrid.addEventListener('change', updateUsualDisabled);
     els.settingsForm.addEventListener('submit', function(e){
       var submitter = e.submitter;
       if (submitter && submitter.value === 'cancel') return;
@@ -3311,7 +3451,7 @@
     viewMode = 'week';
     bind();
     renderAll();
-    loadBackupHandle();
+    updateExportStatus();
     initAuth();
     if (window.ResizeObserver){
       new ResizeObserver(function(){ scheduleLinks(); }).observe(document.querySelector('main'));
