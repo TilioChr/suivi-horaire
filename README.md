@@ -48,7 +48,7 @@ Les horaires habituels se règlent dans **Réglages → Horaires habituels**. Po
 
 Une **journée complète** correspondant à ces horaires est affichée en **vert**. Une journée incomplète (par exemple 09h–12h seulement) ou décalée est affichée en **orangé**, ou en **violet** si des heures de repos sont prises le même jour.
 
-**Repos trop long** : si le repos pris un jour dépasse la durée habituelle de ce jour, la journée, le repos et le fil de liaison passent en **rouge**. Exemple : avec un mercredi habituel de 14h–18h (4 h), 4 h 30 de repos ce jour-là déclenchent le rouge.
+**Repos à vérifier** : le jour, le repos et le fil de liaison passent en **rouge**, et un bandeau « Repos à vérifier » apparaît, lorsque le repos ne correspond pas à l'écart avec la journée habituelle : repos saisi sur une journée déjà complète, repos insuffisant ou excédentaire par rapport aux heures manquantes. Exemple : mercredi habituel 14h–18h (4 h) avec 4 h travaillées et 1 h de repos → signalement.
 
 Un **fil** relie, sur le bord gauche, la ligne de la journée à la ligne de repos du même jour. Les fils sont espacés et s'éclaircissent progressivement pour distinguer les journées.
 
@@ -98,7 +98,7 @@ Les données sont stockées dans votre projet Supabase, accessibles uniquement p
 1. **Journées** : « Ajouter une journée », puis le jour, les heures de début/fin, la pause en minutes et un libellé.
    - La date est préremplie avec la prochaine journée de la semaine : après lundi et mardi, l'ajout propose le mercredi. Si la semaine est complète, la semaine suivante s'ouvre.
    - Une fin avant le début signifie que la vacation passe minuit.
-   - Vert = journée habituelle complète, orangé = journée incomplète ou décalée, violet = journée incomplète avec repos le même jour, rouge = repos supérieur à la durée habituelle du jour.
+   - Vert = journée habituelle complète, orangé = journée incomplète ou décalée, violet = journée incomplète avec repos le même jour, rouge = repos à vérifier (incohérence avec la journée habituelle).
 2. **Repos pris** : saisissez les heures de repos posées ; elles sont déduites du solde et rappelées sur la ligne de la journée concernée.
 3. **Période** : choisissez **Semaine**, **Mois** ou **Année** en haut à droite. Les flèches ‹ › font défiler la période et « Aujourd'hui » revient à la période en cours.
    - En vue semaine, le numéro est modifiable : saisissez-le et appuyez sur **Entrée**. Une semaine inexistante pour l'année est refusée et la semaine affichée reste inchangée.
@@ -112,7 +112,7 @@ En vue semaine, le détail du calcul est affiché sous les compteurs : base majo
 
 ## Vues mois et année
 
-- **Mois** : un calendrier affiche les heures travaillées de chaque jour, avec les mêmes couleurs que la vue semaine (dont le rouge si le repos dépasse la durée habituelle du jour). Un clic sur un jour ouvre sa semaine.
+- **Mois** : un calendrier affiche les heures travaillées de chaque jour, avec les mêmes couleurs que la vue semaine (dont le rouge si un repos est à vérifier). Un clic sur un jour ouvre sa semaine.
 - **Année** : un tableau récapitule les 12 mois (travaillé, nuit, heures supp., repos acquis, repos pris, solde) et un total annuel. Un clic sur un mois l'ouvre.
 
 Les heures supplémentaires et le repos acquis restent calculés **semaine par semaine**, comme dans le contrat. Ils sont rattachés au **lundi** de la semaine : le total d'un mois peut donc inclure quelques jours du mois voisin lorsqu'une semaine est à cheval. Les heures travaillées, la nuit et le repos pris sont, eux, comptés à leur date.

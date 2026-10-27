@@ -353,6 +353,20 @@
   td.c-num .unit{color:var(--ink-3);font-size:11px}
   .day-rest-note{display:block;font-size:10px;color:var(--ink-3);font-weight:500;line-height:1.3;margin-top:1px;white-space:nowrap}
   .m-summary{display:none}
+
+  .input-warning{
+    display:flex;align-items:flex-start;gap:9px;
+    margin:10px 14px 0;padding:9px 11px;border-radius:10px;
+    background:var(--bad-soft);border:1px solid color-mix(in srgb, var(--bad) 28%, transparent);
+    color:var(--bad);font-size:11.5px;line-height:1.4;
+  }
+  .input-warning[hidden]{display:none}
+  .input-warning > svg{width:16px;height:16px;flex:none;margin-top:1px}
+  .input-warning .iw-body{min-width:0}
+  .input-warning b{font-weight:650;color:var(--bad)}
+  .input-warning ul{list-style:none;margin:3px 0 0;padding:0;display:flex;flex-direction:column;gap:2px}
+  .input-warning li{color:var(--ink-2);font-size:11.5px;line-height:1.4}
+  .input-warning li b{color:var(--ink);font-weight:600}
   td.c-night{color:var(--night)}
   td.c-del{width:38px;text-align:right}
   .pause-wrap{display:flex;align-items:center;gap:5px;color:var(--ink-3);font-size:11px}
@@ -854,6 +868,7 @@
     .viewswitch{display:none !important}
     .link-layer{display:none !important}
     .link-gutter{display:none !important}
+    .input-warning{display:none !important}
     #shiftsCard,#restsCard{margin-left:0 !important}
     input[type=date]::-webkit-calendar-picker-indicator,input[type=time]::-webkit-calendar-picker-indicator{display:none !important}
     main,body.has-links main{padding:0 !important;gap:9px;max-width:none}
@@ -1076,6 +1091,14 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
         <span class="btn-label">Ajouter une journée</span>
       </button>
+    </div>
+
+    <div class="input-warning" id="inputWarning" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20.5h19L12 3Z"></path><path d="M12 9v5"></path><path d="M12 17.5h.01"></path></svg>
+      <div class="iw-body">
+        <b>Repos à vérifier</b>
+        <ul id="inputWarningList"></ul>
+      </div>
     </div>
 
     <div class="shift-table">
@@ -1421,9 +1444,37 @@
     return total;
   }
 
-  function isOverRest(restHours, dateISO, settings){
-    var limit = usualDayMinutes(dateISO, settings) / 60;
-    return limit > 0 && (Number(restHours) || 0) > limit + 1e-9;
+  function restIssueForDate(dateISO){
+    var usual = usualDayMinutes(dateISO, state.settings) / 60;
+    if (usual <= 0) return null;
+    var rest = restHoursForDate(dateISO);
+    if (rest <= 0) return null;
+    var worked = 0;
+    state.shifts.forEach(function(s){
+      if (s.date === dateISO) worked += computeShift(s, state.settings).worked;
+    });
+    if (worked <= 0){
+      if (rest > usual + 1e-9) return { type: 'excess', usual: usual, worked: 0, rest: rest, missing: 0, excess: rest - usual };
+      return null;
+    }
+    var missing = Math.max(0, usual - worked);
+    if (rest > missing + 1e-9) return { type: 'excess', usual: usual, worked: worked, rest: rest, missing: missing, excess: rest - missing };
+    if (rest < missing - 1e-9) return { type: 'incomplete', usual: usual, worked: worked, rest: rest, missing: missing, lack: missing - rest };
+    return null;
+  }
+
+  function restIssueText(issue){
+    if (!issue) return '';
+    if (issue.type === 'incomplete'){
+      return 'Repos incomplet : ' + fmtH(issue.lack) + ' manquante' + (issue.lack > 1 ? 's' : '');
+    }
+    if (issue.worked <= 0){
+      return 'Repos supérieurs à la journée habituelle (' + fmtH(issue.usual) + ')';
+    }
+    if (issue.missing <= 0){
+      return fmtH(issue.rest) + ' de repos sur une journée déjà complète';
+    }
+    return 'Repos excédentaire de ' + fmtH(issue.excess) + ' (écart de ' + fmtH(issue.missing) + ')';
   }
 
   function isUsualDay(shifts, dateISO, settings){
@@ -2743,10 +2794,10 @@
     els.restEmpty.hidden = list.length > 0;
     list.forEach(function(r){
       var row = document.createElement('div');
-      var overRest = isOverRest(restHoursForDate(r.date), r.date, state.settings);
-      row.className = 'rest-row' + (overRest ? ' over-rest' : '');
+      var issue = restIssueForDate(r.date);
+      row.className = 'rest-row' + (issue ? ' over-rest' : '');
       row.dataset.id = r.id;
-      if (overRest) row.title = 'Repos supérieurs à la durée habituelle de ce jour';
+      if (issue) row.title = restIssueText(issue);
       row.innerHTML =
         '<input type="date" value="' + esc(r.date) + '" data-field="date" aria-label="Date du repos">' +
         '<div class="rest-hours"><input type="number" min="0" step="0.25" value="' + esc(r.hours) + '" data-field="hours" aria-label="Heures de repos"><span>h</span></div>' +
@@ -2790,7 +2841,8 @@
       var usual = !!s && usualDays[s.date] === true;
       var restH = s ? restHoursForDate(s.date) : 0;
       var linked = !!s && !usual && restH > 0;
-      var overRest = !!s && isOverRest(restH, s.date, state.settings);
+      var issue = s ? restIssueForDate(s.date) : null;
+      var overRest = !!issue;
       workedEl.textContent = c.invalid ? '0h00' : fmtHM(c.worked);
       nightEl.textContent = fmtHM(c.night);
       tr.classList.toggle('row-warn', !!c.invalid);
@@ -2803,7 +2855,7 @@
       if (c.invalid) bits.push('Horaires identiques : la journée ne compte pas.');
       else if (c.crosses) bits.push('Journée qui passe minuit.');
       if (s) {
-        if (overRest) bits.push('Repos supérieurs à l’horaire habituel (' + fmtH(usualDayMinutes(s.date, state.settings) / 60) + ')');
+        if (issue) bits.push('Repos à vérifier : ' + restIssueText(issue));
         else bits.push(usual ? 'Journée habituelle' : (linked ? 'Journée inhabituelle avec repos' : 'Journée inhabituelle'));
       }
 
@@ -2832,24 +2884,49 @@
         if ((Number(s.pause) || 0) > 0) meta += ' · pause ' + fmtHM((Number(s.pause) || 0) / 60);
         if (c.night > 0) meta += ' · nuit ' + fmtHM(c.night);
         if (restH > 0) meta += ' · ' + fmtH(restH) + ' repos';
+        if (issue) meta = '⚠ ' + meta;
         mMeta.textContent = meta;
         mWorked.textContent = c.invalid ? '0h00' : fmtHM(c.worked);
         var mToggle = tr.querySelector('.js-m-toggle');
-        if (mToggle) mToggle.setAttribute('aria-label', 'Modifier la journée du ' + fmtDayLong(s.date));
+        if (mToggle) mToggle.setAttribute('aria-label', 'Modifier la journée du ' + fmtDayLong(s.date) + (issue ? '. ' + restIssueText(issue) : ''));
       }
     });
 
     Array.prototype.forEach.call(els.restList.querySelectorAll('.rest-row'), function(row){
       var r = findRest(row.dataset.id);
-      var over = !!r && isOverRest(restHoursForDate(r.date), r.date, state.settings);
-      row.classList.toggle('over-rest', over);
-      row.title = over ? 'Repos supérieurs à la durée habituelle de ce jour' : '';
+      var issue = r ? restIssueForDate(r.date) : null;
+      row.classList.toggle('over-rest', !!issue);
+      row.title = issue ? restIssueText(issue) : '';
     });
 
     renderFormula(w);
     renderBar(w);
     renderBalanceChip(g);
+    renderInputWarnings();
     scheduleLinks();
+  }
+
+  function renderInputWarnings(){
+    if (!els.inputWarning) return;
+    var byDate = {};
+    weekShifts().forEach(function(s){ if (s.date) byDate[s.date] = true; });
+    weekRests().forEach(function(r){ if (r.date) byDate[r.date] = true; });
+    var issues = [];
+    Object.keys(byDate).sort().forEach(function(d){
+      var issue = restIssueForDate(d);
+      if (issue) issues.push({ date: d, issue: issue });
+    });
+    if (!issues.length){
+      els.inputWarning.hidden = true;
+      if (els.inputWarningList) els.inputWarningList.innerHTML = '';
+      return;
+    }
+    els.inputWarning.hidden = false;
+    if (els.inputWarningList){
+      els.inputWarningList.innerHTML = issues.map(function(x){
+        return '<li><b>' + esc(fmtDayShort(x.date)) + '</b> — ' + esc(restIssueText(x.issue)) + '</li>';
+      }).join('');
+    }
   }
 
   var linkTimer = 0;
@@ -2979,7 +3056,7 @@
 
       var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       path.setAttribute('d', d);
-      var overRest = isOverRest(restByDate[date].hours, date, state.settings);
+      var overRest = !!restIssueForDate(date);
       var tone = linkTone(index, count, overRest);
       if (overRest) path.setAttribute('class', 'link-overrest');
       path.style.stroke = tone;
@@ -3081,7 +3158,8 @@
       });
       var rest = restHoursForDate(dateISO);
       var usual = dayShifts.length ? isUsualDay(dayShifts, dateISO, state.settings) : false;
-      var overRest = isOverRest(rest, dateISO, state.settings);
+      var issue = restIssueForDate(dateISO);
+      var overRest = !!issue;
       var status = '';
       if (overRest) status = 'cal-overrest';
       else if (dayShifts.length) status = usual ? 'cal-usual' : (rest > 0 ? 'cal-rest' : 'cal-unusual');
@@ -3092,7 +3170,7 @@
       if (worked > 0) bits.push(fmtH(worked) + ' travaillées');
       if (night > 0) bits.push(fmtH(night) + ' de nuit');
       if (rest > 0) bits.push(fmtH(rest) + ' de repos');
-      if (overRest) bits.push('repos supérieurs à l’horaire habituel');
+      if (issue) bits.push(restIssueText(issue));
       else if (dayShifts.length) bits.push(usual ? 'journée habituelle' : (rest > 0 ? 'journée inhabituelle avec repos' : 'journée inhabituelle'));
       bits.push('ouvrir la semaine');
       var title = bits.join(' · ');
@@ -3823,7 +3901,7 @@
       'newPassword', 'newPassword2', 'recoveryForm', 'recoveryBtn', 'authMsg', 'authNote', 'closeAccountBtn',
       'syncNowBtn', 'logoutBtn', 'logoutClearBtn', 'syncDlg', 'syncTitle', 'syncText', 'syncCounts',
       'syncCloudBtn', 'syncLocalBtn', 'syncLaterBtn',
-      'shiftBody', 'shiftEmpty',
+      'shiftBody', 'shiftEmpty', 'inputWarning', 'inputWarningList',
       'addShiftBtn', 'addShiftBtn2', 'restList', 'restEmpty', 'addRestBtn', 'restBody',
       'settingsDlg', 'settingsForm', 'resetDataBtn', 'resetSettingsBtn', 'cancelSettingsBtn',
       'applySettingsBtn', 'importFile', 'toast',
