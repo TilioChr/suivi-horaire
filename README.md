@@ -36,7 +36,7 @@ Les horaires et les pauses sont arrondis au quart d'heure (00, 15, 30, 45). Une 
 
 Chaque journée s'affiche sous forme de carte compacte : touchez la carte pour ouvrir la saisie, puis son en-tête pour la replier. Le numéro de semaine se valide avec le bouton ✓ ou la touche **Entrée**. Les réglages gardent leurs boutons d'action visibles en bas de l'écran.
 
-La marge gauche réservée aux fils de liaison n'apparaît que lorsqu'un repos est relié à une journée de la semaine ; sinon l'interface reste centrée.
+La marge gauche réservée aux fils de liaison n'apparaît que lorsqu'un repos est relié à une journée de la semaine. Seuls les blocs **Journées de la semaine** et **Repos pris** se décalent pour lui faire place ; l'en-tête, les statistiques et les autres blocs restent centrés. Un fond discret et une animation signalent cet espace réservé.
 
 ## Horaires habituels et couleurs
 
