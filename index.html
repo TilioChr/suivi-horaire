@@ -315,6 +315,14 @@
   tbody tr.row-unusual td:first-child{box-shadow:inset 3px 0 0 var(--ot)}
   tbody tr.row-rest td:first-child{box-shadow:inset 3px 0 0 var(--night)}
   tbody tr.row-rest .day-rest-note{color:var(--night)}
+  tbody tr.row-off{background:var(--panel-2)}
+  tbody tr.row-off:hover{background:var(--panel-3)}
+  tbody tr.row-off td:first-child{box-shadow:inset 3px 0 0 var(--ink-3)}
+  tbody tr.row-off .day-rest-note{color:var(--ink-3)}
+  tbody tr.row-off .c-time input,
+  tbody tr.row-off .c-pause .pause-wrap{display:none}
+  tbody tr.row-off .c-time .off-mark,
+  tbody tr.row-off .c-pause > .off-mark{display:inline}
   tbody tr.row-overrest{background:color-mix(in srgb, var(--bad-soft) 82%, var(--panel))}
   tbody tr.row-overrest:hover{background:color-mix(in srgb, var(--bad-soft) 95%, var(--panel-2))}
   tbody tr.row-overrest td:first-child{box-shadow:inset 3px 0 0 var(--bad)}
@@ -338,13 +346,13 @@
   .link-layer path.link-overrest{stroke:var(--bad)}
   .link-layer circle.link-overrest{fill:var(--bad)}
 
-  .cell-input input{
+  .cell-input input:not([type=checkbox]){
     width:100%;min-width:0;padding:6px 7px;border-radius:7px;
     border:1px solid transparent;background:transparent;color:var(--ink);
     transition:background .12s,border-color .12s;
   }
-  .cell-input input:hover{background:var(--panel-3)}
-  .cell-input input:focus{outline:none;background:var(--panel);border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent)}
+  .cell-input input:not([type=checkbox]):hover{background:var(--panel-3)}
+  .cell-input input:not([type=checkbox]):focus{outline:none;background:var(--panel);border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent)}
   td.c-date{width:146px}
   td.c-time{width:98px}
   td.c-pause{width:92px}
@@ -352,6 +360,11 @@
   td.c-num{width:88px;text-align:right;font-variant-numeric:tabular-nums;font-size:13px;white-space:nowrap}
   td.c-num .unit{color:var(--ink-3);font-size:11px}
   .day-rest-note{display:block;font-size:10px;color:var(--ink-3);font-weight:500;line-height:1.3;margin-top:1px;white-space:nowrap}
+  .label-wrap{display:flex;align-items:center;gap:6px;width:100%}
+  .label-wrap > input{flex:1;min-width:0}
+  .off-toggle{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;color:var(--ink-3);white-space:nowrap;cursor:pointer;flex:none;user-select:none}
+  .off-toggle input{width:14px;height:14px;margin:0;accent-color:var(--accent)}
+  .off-mark{display:none;color:var(--ink-3);font-size:13px;line-height:1.4}
   .m-summary{display:none}
 
   .input-warning{
@@ -421,6 +434,8 @@
   .cal-cell.cal-unusual{background:color-mix(in srgb,var(--ot-soft) 82%,var(--panel));border-color:color-mix(in srgb,var(--ot) 20%,var(--line))}
   .cal-cell.cal-rest{background:color-mix(in srgb,var(--night-soft) 86%,var(--panel));border-color:color-mix(in srgb,var(--night) 22%,var(--line))}
   .cal-cell.cal-restonly{background:color-mix(in srgb,var(--night-soft) 55%,var(--panel));border-color:color-mix(in srgb,var(--night) 18%,var(--line))}
+  .cal-cell.cal-off{background:var(--panel-2);border-color:var(--line)}
+  .cal-cell.cal-off .cal-off-label{color:var(--ink-3);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
   .cal-cell.cal-overrest{background:color-mix(in srgb,var(--bad-soft) 82%,var(--panel));border-color:color-mix(in srgb,var(--bad) 24%,var(--line))}
   .cal-cell.cal-overrest .cal-sub{color:var(--bad)}
   .cal-cell.cal-today{outline:2px solid var(--accent);outline-offset:-2px}
@@ -535,11 +550,11 @@
     .shift-table td.c-num{width:auto;align-items:flex-start}
     .shift-table td.c-del{position:absolute;top:9px;right:9px;width:30px;padding:0}
     .shift-table td.c-del::before{content:none}
-    .cell-input input{background:var(--panel-2);border-color:var(--line)}
-    .shift-table tr.row-usual .cell-input input{background:color-mix(in srgb, var(--good-soft) 55%, var(--panel))}
-    .shift-table tr.row-unusual .cell-input input{background:color-mix(in srgb, var(--ot-soft) 55%, var(--panel))}
-    .shift-table tr.row-rest .cell-input input{background:color-mix(in srgb, var(--night-soft) 55%, var(--panel))}
-    .shift-table tr.row-overrest .cell-input input{background:color-mix(in srgb, var(--bad-soft) 55%, var(--panel))}
+    .cell-input input:not([type=checkbox]){background:var(--panel-2);border-color:var(--line)}
+    .shift-table tr.row-usual .cell-input input:not([type=checkbox]){background:color-mix(in srgb, var(--good-soft) 55%, var(--panel))}
+    .shift-table tr.row-unusual .cell-input input:not([type=checkbox]){background:color-mix(in srgb, var(--ot-soft) 55%, var(--panel))}
+    .shift-table tr.row-rest .cell-input input:not([type=checkbox]){background:color-mix(in srgb, var(--night-soft) 55%, var(--panel))}
+    .shift-table tr.row-overrest .cell-input input:not([type=checkbox]){background:color-mix(in srgb, var(--bad-soft) 55%, var(--panel))}
     .pause-wrap input{width:100%}
     .shift-table .row-warn{background:var(--ot-soft)}
   }
@@ -713,6 +728,7 @@
     #shiftsCard tbody tr.row-usual{border-left-color:var(--good)}
     #shiftsCard tbody tr.row-unusual{border-left-color:var(--ot)}
     #shiftsCard tbody tr.row-rest{border-left-color:var(--night)}
+    #shiftsCard tbody tr.row-off{border-left-color:var(--ink-3)}
     #shiftsCard tbody tr.row-overrest{border-left-color:var(--bad)}
     #shiftsCard tbody tr > td{display:none}
     #shiftsCard tbody td.m-summary{display:flex}
@@ -754,12 +770,17 @@
     #shiftsCard tr.editing > td.c-del .icon-btn::after{content:'Supprimer';font-size:11px;font-weight:550}
     #shiftsCard tr.editing > td.c-del .icon-btn:hover{background:var(--bad-soft);color:var(--bad)}
     #shiftsCard tr.editing > td::before{font-size:9px}
-    #shiftsCard tr.editing .cell-input input,
+    #shiftsCard tr.editing .cell-input input:not([type=checkbox]),
     .rest-row input{
       width:100%;min-width:0;max-width:100%;
       -webkit-appearance:none;appearance:none;text-align:left;
     }
-    #shiftsCard tr.editing .cell-input input{font-size:16px;padding:7px 8px}
+    #shiftsCard tr.editing.row-off{grid-template-areas:"summary summary" "date date" "label label" "delete delete"}
+    #shiftsCard tr.editing.row-off > td.c-time,
+    #shiftsCard tr.editing.row-off > td.c-pause{display:none}
+    #shiftsCard tr.editing .cell-input input:not([type=checkbox]){font-size:16px;padding:7px 8px}
+    .off-toggle{font-size:11px}
+    .off-toggle input{width:16px;height:16px}
     #shiftsCard tr.editing .cell-input input[type=date],
     #shiftsCard tr.editing .cell-input input[type=time],
     .rest-row input[type=date]{
@@ -868,7 +889,7 @@
     .viewswitch{display:none !important}
     .link-layer{display:none !important}
     .link-gutter{display:none !important}
-    .input-warning{display:none !important}
+    .input-warning,.off-toggle{display:none !important}
     #shiftsCard,#restsCard{margin-left:0 !important}
     input[type=date]::-webkit-calendar-picker-indicator,input[type=time]::-webkit-calendar-picker-indicator{display:none !important}
     main,body.has-links main{padding:0 !important;gap:9px;max-width:none}
@@ -1480,6 +1501,7 @@
   function isUsualDay(shifts, dateISO, settings){
     var blocks = usualBlocksFor(dateISO, settings);
     if (!blocks.length || !shifts || !shifts.length) return false;
+    if (shifts.some(function(s){ return s.off; })) return false;
     if (shifts.length === 1){
       var one = shifts[0];
       if (blocks.length === 1){
@@ -1509,6 +1531,7 @@
   }
 
   function isPrimaryUsual(shift, dateISO, settings){
+    if (!shift || shift.off) return false;
     var p = usualPrimaryFor(dateISO, settings);
     return !!p && timesEqual(shift.start, p.start) && timesEqual(shift.end, p.end) && (Number(shift.pause) || 0) === p.pause;
   }
@@ -1546,6 +1569,9 @@
   }
 
   function computeShift(shift, settings){
+    if (shift && shift.off){
+      return { id: shift.id, raw: 0, pause: 0, worked: 0, night: 0, day: 0, invalid: false, crosses: false, off: true };
+    }
     var win = shiftWindow(shift);
     if (!win){
       return { id: shift.id, raw: 0, pause: 0, worked: 0, night: 0, day: 0, invalid: true, crosses: false };
@@ -1675,7 +1701,8 @@
         start: /^\d{1,2}:\d{2}$/.test(s.start || '') ? s.start : '09:00',
         end: /^\d{1,2}:\d{2}$/.test(s.end || '') ? s.end : '18:00',
         pause: Math.max(0, Number(s.pause) || 0),
-        label: typeof s.label === 'string' ? s.label.slice(0, 120) : ''
+        label: typeof s.label === 'string' ? s.label.slice(0, 120) : '',
+        off: s.off === true
       });
     });
     (Array.isArray(raw.rests) ? raw.rests : []).forEach(function(r){
@@ -2670,7 +2697,7 @@
       var c = computeShift(s, state.settings);
       worked += c.worked;
       night += c.night;
-      days[s.date] = true;
+      if (!s.off) days[s.date] = true;
     });
     state.rests.forEach(function(r){
       if (r.date && r.date.indexOf(prefix) === 0) taken += Math.max(0, Number(r.hours) || 0);
@@ -2761,12 +2788,15 @@
       var tr = document.createElement('tr');
       tr.dataset.id = s.id;
       if (editingShiftId === s.id) tr.classList.add('editing');
+      if (s.off) tr.classList.add('row-off');
+      var disabled = s.off ? ' disabled' : '';
+      var initialMeta = s.off ? 'Journée off' : (s.start + ' – ' + s.end);
       tr.innerHTML =
         '<td class="m-summary">' +
           '<button type="button" class="m-sum-toggle js-m-toggle" aria-expanded="' + (editingShiftId === s.id ? 'true' : 'false') + '">' +
             '<span class="m-sum-main">' +
               '<span class="m-sum-date js-m-date">' + esc(fmtDayShort(s.date)) + '</span>' +
-              '<span class="m-sum-meta js-m-meta">' + esc(s.start + ' – ' + s.end) + '</span>' +
+              '<span class="m-sum-meta js-m-meta">' + esc(initialMeta) + '</span>' +
             '</span>' +
             '<span class="m-sum-right">' +
               '<span class="m-sum-hours js-m-worked">–</span>' +
@@ -2775,10 +2805,10 @@
           '</button>' +
         '</td>' +
         '<td class="cell-input c-date" data-label="Jour"><input type="date" value="' + esc(s.date) + '" data-field="date" aria-label="Jour"></td>' +
-        '<td class="cell-input c-time c-start" data-label="Début"><input type="time" step="900" value="' + esc(s.start) + '" data-field="start" aria-label="Heure de début"></td>' +
-        '<td class="cell-input c-time c-end" data-label="Fin"><input type="time" step="900" value="' + esc(s.end) + '" data-field="end" aria-label="Heure de fin"></td>' +
-        '<td class="cell-input c-pause" data-label="Pause"><div class="pause-wrap"><input type="number" min="0" step="15" value="' + esc(s.pause) + '" data-field="pause" aria-label="Pause en minutes"><span>min</span></div></td>' +
-        '<td class="cell-input c-label" data-label="Libellé"><input type="text" maxlength="120" value="' + esc(s.label) + '" placeholder="Ex. Montage Lyon" data-field="label" aria-label="Libellé"></td>' +
+        '<td class="cell-input c-time c-start" data-label="Début"><input type="time" step="900" value="' + esc(s.start) + '" data-field="start" aria-label="Heure de début"' + disabled + '><span class="off-mark" aria-hidden="true">—</span></td>' +
+        '<td class="cell-input c-time c-end" data-label="Fin"><input type="time" step="900" value="' + esc(s.end) + '" data-field="end" aria-label="Heure de fin"' + disabled + '><span class="off-mark" aria-hidden="true">—</span></td>' +
+        '<td class="cell-input c-pause" data-label="Pause"><div class="pause-wrap"><input type="number" min="0" step="15" value="' + esc(s.pause) + '" data-field="pause" aria-label="Pause en minutes"' + disabled + '><span>min</span></div><span class="off-mark" aria-hidden="true">—</span></td>' +
+        '<td class="cell-input c-label" data-label="Libellé"><div class="label-wrap"><input type="text" maxlength="120" value="' + esc(s.label) + '" placeholder="Ex. Montage Lyon" data-field="label" aria-label="Libellé"><label class="off-toggle" title="Journée off : aucun horaire à saisir"><input type="checkbox" data-field="off"' + (s.off ? ' checked' : '') + '> Off</label></div></td>' +
         '<td class="c-num" data-label="Travaillé"><span class="js-worked">–</span><span class="day-rest-note js-rest" hidden></span></td>' +
         '<td class="c-num c-night" data-label="Dont nuit"><span class="js-night">–</span></td>' +
         '<td class="c-del"><button class="icon-btn js-del" type="button" title="Supprimer cette journée" aria-label="Supprimer cette journée">' +
@@ -2838,25 +2868,28 @@
         return;
       }
       var s = findShift(tr.dataset.id);
-      var usual = !!s && usualDays[s.date] === true;
+      var isOff = !!s && !!s.off;
+      var usual = !!s && !isOff && usualDays[s.date] === true;
       var restH = s ? restHoursForDate(s.date) : 0;
-      var linked = !!s && !usual && restH > 0;
+      var linked = !!s && !isOff && !usual && restH > 0;
       var issue = s ? restIssueForDate(s.date) : null;
       var overRest = !!issue;
       workedEl.textContent = c.invalid ? '0h00' : fmtHM(c.worked);
       nightEl.textContent = fmtHM(c.night);
       tr.classList.toggle('row-warn', !!c.invalid);
       tr.classList.toggle('row-overrest', overRest);
-      tr.classList.toggle('row-usual', !overRest && usual);
-      tr.classList.toggle('row-unusual', !overRest && !!s && !usual && !linked);
-      tr.classList.toggle('row-rest', !overRest && linked);
+      tr.classList.toggle('row-off', isOff);
+      tr.classList.toggle('row-usual', !overRest && !isOff && usual);
+      tr.classList.toggle('row-unusual', !overRest && !isOff && !!s && !usual && !linked);
+      tr.classList.toggle('row-rest', !overRest && !isOff && linked);
 
       var bits = [];
       if (c.invalid) bits.push('Horaires identiques : la journée ne compte pas.');
       else if (c.crosses) bits.push('Journée qui passe minuit.');
       if (s) {
+        if (isOff) bits.push('Journée off');
         if (issue) bits.push('Repos à vérifier : ' + restIssueText(issue));
-        else bits.push(usual ? 'Journée habituelle' : (linked ? 'Journée inhabituelle avec repos' : 'Journée inhabituelle'));
+        else if (!isOff) bits.push(usual ? 'Journée habituelle' : (linked ? 'Journée inhabituelle avec repos' : 'Journée inhabituelle'));
       }
 
       var firstOfDay = !!s && !seenDates[s.date];
@@ -2880,15 +2913,20 @@
       var mWorked = tr.querySelector('.js-m-worked');
       if (s && mDate && mMeta && mWorked){
         mDate.textContent = fmtDayShort(s.date);
-        var meta = s.start + ' – ' + s.end;
-        if ((Number(s.pause) || 0) > 0) meta += ' · pause ' + fmtHM((Number(s.pause) || 0) / 60);
-        if (c.night > 0) meta += ' · nuit ' + fmtHM(c.night);
+        var meta;
+        if (isOff){
+          meta = 'Journée off';
+        } else {
+          meta = s.start + ' – ' + s.end;
+          if ((Number(s.pause) || 0) > 0) meta += ' · pause ' + fmtHM((Number(s.pause) || 0) / 60);
+          if (c.night > 0) meta += ' · nuit ' + fmtHM(c.night);
+        }
         if (restH > 0) meta += ' · ' + fmtH(restH) + ' repos';
         if (issue) meta = '⚠ ' + meta;
         mMeta.textContent = meta;
         mWorked.textContent = c.invalid ? '0h00' : fmtHM(c.worked);
         var mToggle = tr.querySelector('.js-m-toggle');
-        if (mToggle) mToggle.setAttribute('aria-label', 'Modifier la journée du ' + fmtDayLong(s.date) + (issue ? '. ' + restIssueText(issue) : ''));
+        if (mToggle) mToggle.setAttribute('aria-label', 'Modifier la journée du ' + fmtDayLong(s.date) + (isOff ? '. Journée off' : '') + (issue ? '. ' + restIssueText(issue) : ''));
       }
     });
 
@@ -3158,26 +3196,30 @@
       });
       var rest = restHoursForDate(dateISO);
       var usual = dayShifts.length ? isUsualDay(dayShifts, dateISO, state.settings) : false;
+      var allOff = dayShifts.length > 0 && dayShifts.every(function(s){ return !!s.off; });
       var issue = restIssueForDate(dateISO);
       var overRest = !!issue;
       var status = '';
       if (overRest) status = 'cal-overrest';
+      else if (allOff) status = 'cal-off';
       else if (dayShifts.length) status = usual ? 'cal-usual' : (rest > 0 ? 'cal-rest' : 'cal-unusual');
       else if (rest > 0) status = 'cal-restonly';
       var classes = 'cal-cell' + (status ? ' ' + status : '') + (dateISO === todayISO ? ' cal-today' : '');
       var dateLabel = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }).format(dateObj);
       var bits = [dateLabel];
-      if (worked > 0) bits.push(fmtH(worked) + ' travaillées');
+      if (allOff) bits.push('journée off');
+      else if (worked > 0) bits.push(fmtH(worked) + ' travaillées');
       if (night > 0) bits.push(fmtH(night) + ' de nuit');
       if (rest > 0) bits.push(fmtH(rest) + ' de repos');
       if (issue) bits.push(restIssueText(issue));
-      else if (dayShifts.length) bits.push(usual ? 'journée habituelle' : (rest > 0 ? 'journée inhabituelle avec repos' : 'journée inhabituelle'));
+      else if (dayShifts.length && !allOff) bits.push(usual ? 'journée habituelle' : (rest > 0 ? 'journée inhabituelle avec repos' : 'journée inhabituelle'));
       bits.push('ouvrir la semaine');
       var title = bits.join(' · ');
       html += '<button type="button" class="' + classes + '" data-date="' + dateISO + '" title="' + esc(title) + '" aria-label="' + esc(title) + '">';
       html += '<span class="cal-num">' + day + '</span>';
       if (worked > 0) html += '<span class="cal-hours">' + fmtCal(worked) + '</span>';
       else if (rest > 0) html += '<span class="cal-hours">' + fmtCal(rest) + '</span>';
+      else if (allOff) html += '<span class="cal-hours cal-off-label">off</span>';
       if (rest > 0) html += '<span class="cal-sub">' + (worked > 0 ? '+' + fmtCal(rest) + ' repos' : 'repos') + '</span>';
       else if (night > 0) html += '<span class="cal-sub">' + fmtCal(night) + ' nuit</span>';
       html += '</button>';
@@ -3341,6 +3383,13 @@
     if (!s) return;
     var f = input.dataset.field;
 
+    if (f === 'off'){
+      s.off = !!input.checked;
+      save();
+      renderAll();
+      return;
+    }
+
     if (f === 'start' || f === 'end'){
       var t = snapTimeValue(input.value);
       if (t && t !== input.value) input.value = t;
@@ -3458,7 +3507,8 @@
       start: t.start,
       end: t.end,
       pause: t.pause,
-      label: ''
+      label: '',
+      off: false
     });
     editingShiftId = state.shifts[state.shifts.length - 1].id;
     save();
@@ -3840,7 +3890,11 @@
       arr.forEach(function(s){
         var c = byId[s.id] || { worked: 0, night: 0 };
         rows.push([
-          s.date, s.start, s.end, s.pause || 0, s.label || '',
+          s.date,
+          s.off ? '—' : s.start,
+          s.off ? '—' : s.end,
+          s.off ? 0 : (s.pause || 0),
+          s.off ? (s.label ? 'Off — ' + s.label : 'Off') : (s.label || ''),
           dec(c.worked), dec(c.night), wk, dec(cw.credit), dec(taken)
         ]);
       });

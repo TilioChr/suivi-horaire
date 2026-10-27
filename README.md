@@ -48,6 +48,8 @@ Les horaires habituels se règlent dans **Réglages → Horaires habituels**. Po
 
 Une **journée complète** correspondant à ces horaires est affichée en **vert**. Une journée incomplète (par exemple 09h–12h seulement) ou décalée est affichée en **orangé**, ou en **violet** si des heures de repos sont prises le même jour.
 
+Une **journée off** (aucun travail) se déclare avec la case **Off** dans la journée : les horaires deviennent des tirets, la journée compte 0 h et peut tout de même être reliée à un repos. Elle s'affiche en neutre, sans fausse journée 09h–09h.
+
 **Repos à vérifier** : le jour, le repos et le fil de liaison passent en **rouge**, et un bandeau « Repos à vérifier » apparaît, lorsque le repos ne correspond pas à l'écart avec la journée habituelle : repos saisi sur une journée déjà complète, repos insuffisant ou excédentaire par rapport aux heures manquantes. Exemple : mercredi habituel 14h–18h (4 h) avec 4 h travaillées et 1 h de repos → signalement.
 
 Un **fil** relie, sur le bord gauche, la ligne de la journée à la ligne de repos du même jour. Les fils sont espacés et s'éclaircissent progressivement pour distinguer les journées.
@@ -98,6 +100,7 @@ Les données sont stockées dans votre projet Supabase, accessibles uniquement p
 1. **Journées** : « Ajouter une journée », puis le jour, les heures de début/fin, la pause en minutes et un libellé.
    - La date est préremplie avec la prochaine journée de la semaine : après lundi et mardi, l'ajout propose le mercredi. Si la semaine est complète, la semaine suivante s'ouvre.
    - Une fin avant le début signifie que la vacation passe minuit.
+   - Pour une journée sans travail, cochez **Off** : plus besoin de saisir 09h–09h.
    - Vert = journée habituelle complète, orangé = journée incomplète ou décalée, violet = journée incomplète avec repos le même jour, rouge = repos à vérifier (incohérence avec la journée habituelle).
 2. **Repos pris** : saisissez les heures de repos posées ; elles sont déduites du solde et rappelées sur la ligne de la journée concernée.
 3. **Période** : choisissez **Semaine**, **Mois** ou **Année** en haut à droite. Les flèches ‹ › font défiler la période et « Aujourd'hui » revient à la période en cours.
