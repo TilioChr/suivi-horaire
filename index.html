@@ -321,7 +321,7 @@
 
   .link-gutter{
     display:none;position:absolute;left:2px;top:0;width:0;height:0;z-index:0;
-    border:1px solid color-mix(in srgb, var(--night) 16%, transparent);
+    border:1px solid var(--line);
     border-right:0;
     border-radius:14px 0 0 14px;
     background:linear-gradient(180deg, color-mix(in srgb, var(--night) 11%, transparent), color-mix(in srgb, var(--night) 4%, transparent));
@@ -486,8 +486,8 @@
   @media (max-width:1180px){
     main{padding-left:22px}
     .topbar-inner{padding-left:22px}
-    #shiftsCard,#restsCard{position:relative;z-index:1;transition:margin-left .2s ease}
-    body.has-links #shiftsCard,body.has-links #restsCard{margin-left:18px}
+    #shiftsCard,#restsCard{position:relative;z-index:1;transition:margin-left .2s ease,border-top-left-radius .2s ease,border-bottom-left-radius .2s ease}
+    body.has-links #shiftsCard,body.has-links #restsCard{margin-left:18px;border-top-left-radius:0;border-bottom-left-radius:0}
     .link-gutter{display:block}
   }
 
