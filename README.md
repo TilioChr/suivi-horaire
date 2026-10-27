@@ -36,6 +36,8 @@ Les horaires et les pauses sont arrondis au quart d'heure (00, 15, 30, 45). Une 
 
 Chaque journée s'affiche sous forme de carte compacte : touchez la carte pour ouvrir la saisie, puis son en-tête pour la replier. Le numéro de semaine se valide avec le bouton ✓ ou la touche **Entrée**. Les réglages gardent leurs boutons d'action visibles en bas de l'écran.
 
+La marge gauche réservée aux fils de liaison n'apparaît que lorsqu'un repos est relié à une journée de la semaine ; sinon l'interface reste centrée.
+
 ## Horaires habituels et couleurs
 
 Les horaires habituels se règlent dans **Réglages → Horaires habituels**. Pour chaque jour, cochez le matin et/ou l'après-midi, puis indiquez les heures. Les modifications s'appliquent immédiatement à toutes les semaines. Par défaut :
