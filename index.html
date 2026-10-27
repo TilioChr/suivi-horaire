@@ -107,6 +107,7 @@
     box-shadow:var(--shadow);
   }
   .balance-chip .bc-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);font-weight:600;line-height:1.2}
+  .bc-short{display:none}
   .balance-chip .bc-sub{font-size:11px;color:var(--ink-3);line-height:1.3;white-space:nowrap}
   .balance-chip .bc-value{font-size:19px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--good)}
   .balance-chip.neg .bc-value{color:var(--bad)}
@@ -232,6 +233,7 @@
   .week-number:hover{background:var(--panel);border-color:var(--line-strong)}
   .week-number:focus{outline:none;background:var(--panel);border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent)}
   .week-number.invalid{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
+  .week-go{display:none}
   .week-title .wt-sub{font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums}
   .nav-btn{
     width:32px;height:32px;display:grid;place-items:center;border-radius:9px;
@@ -337,6 +339,7 @@
   td.c-num{width:88px;text-align:right;font-variant-numeric:tabular-nums;font-size:13px;white-space:nowrap}
   td.c-num .unit{color:var(--ink-3);font-size:11px}
   .day-rest-note{display:block;font-size:10px;color:var(--ink-3);font-weight:500;line-height:1.3;margin-top:1px;white-space:nowrap}
+  .m-summary{display:none}
   td.c-night{color:var(--night)}
   td.c-del{width:38px;text-align:right}
   .pause-wrap{display:flex;align-items:center;gap:5px;color:var(--ink-3);font-size:11px}
@@ -589,6 +592,199 @@
     .bar-caption{flex-direction:column;gap:2px}
   }
 
+  @media (max-width:700px){
+    /* En-tête compact */
+    .topbar-inner{
+      display:grid;grid-template-columns:minmax(0,1fr) auto;
+      grid-template-areas:"brand balance" "actions actions";
+      align-items:center;gap:8px 10px;padding:10px 16px 10px 34px;
+    }
+    .topbar-spacer{display:none}
+    .brand{grid-area:brand;gap:8px;min-width:0}
+    .brand-mark{width:34px;height:34px;border-radius:10px}
+    .brand-text h1{font-size:16px;white-space:nowrap}
+    .balance-chip{grid-area:balance;justify-self:end;padding:6px 10px;gap:8px;border-radius:11px}
+    .balance-chip .bc-label{font-size:9px;letter-spacing:.06em}
+    .balance-chip .bc-value{font-size:16px}
+    .balance-chip .bc-sub{display:none}
+    .bc-long{display:none}
+    .bc-short{display:inline}
+    .actions{grid-area:actions;gap:6px;width:100%}
+    .actions .btn{height:38px;padding:6px 10px}
+    .actions .menu-wrap{flex:1;display:flex}
+    .btn .btn-label{display:none}
+    #exportBtn{flex:1;justify-content:center;padding:6px 12px}
+    #exportBtn .btn-label{display:inline}
+    .btn.icon-only{padding:6px 9px;min-width:38px}
+    .account-dot{top:2px;right:2px}
+    .menu{min-width:228px}
+
+    /* Période */
+    #periodCard .card-head{flex-direction:column;align-items:stretch;gap:10px;padding:12px 14px}
+    #periodCard .card-head .spacer{display:none}
+    .weeknav{
+      display:grid;grid-template-columns:36px 36px minmax(0,1fr) 36px;
+      grid-template-areas:"prev next title today";
+      align-items:center;gap:6px;width:100%;flex-wrap:nowrap;
+    }
+    .nav-btn{width:36px;height:36px}
+    #prevWeek{grid-area:prev}
+    #nextWeek{grid-area:next}
+    .week-title{grid-area:title;min-width:0;margin-left:2px}
+    .week-title .wt-main{font-size:14px;gap:4px;min-width:0}
+    .week-title .wt-sub{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .week-number{width:3.2ch;height:28px;padding:0 2px;font-size:16px}
+    .week-go{
+      display:inline-flex;align-items:center;justify-content:center;flex:none;
+      width:28px;height:28px;padding:0;border:1px solid var(--line);border-radius:6px;
+      background:var(--panel-2);color:var(--ink-2);cursor:pointer;
+    }
+    .week-go:hover{background:var(--panel);border-color:var(--line-strong)}
+    .week-go svg{width:14px;height:14px}
+    .today-btn{grid-area:today;width:36px;height:36px;padding:0;margin:0;justify-content:center}
+    .today-btn .btn-label{display:none}
+    .today-btn svg{width:16px;height:16px}
+    .viewswitch{width:100%;margin:0}
+    .viewswitch button{flex:1;padding:7px 4px;font-size:12px}
+
+    /* Chiffres */
+    .card{min-width:0}
+    .stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;padding:10px 12px 0}
+    .stat{min-width:0;padding:9px 8px;border-radius:10px}
+    .stat .s-label{font-size:9.5px;letter-spacing:.04em}
+    .stat .s-value{font-size:17px;margin-top:2px}
+    .stat .s-sub{font-size:9px;line-height:1.25}
+    .formula{display:none}
+    .bar-block{padding:10px 14px 12px}
+    .bar-caption{font-size:10px;margin-top:5px}
+    .bar-caption > span{white-space:normal}
+
+    main{gap:12px}
+
+    /* Journées */
+    #shiftsCard .card-head,#restsCard .card-head{padding:12px 14px;gap:8px;flex-wrap:nowrap}
+    #shiftsCard .card-head h2,#restsCard .card-head h2{font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    #shiftsCard .card-head .btn,#restsCard .card-head .btn{
+      width:38px;height:38px;padding:0;justify-content:center;flex:none;
+    }
+    #shiftsCard .card-head .btn .btn-label,#restsCard .card-head .btn .btn-label{display:none}
+    #shiftsCard .card-head .btn svg,#restsCard .card-head .btn svg{width:16px;height:16px}
+    #shiftEmpty .btn{width:100%}
+
+    #shiftsCard table,#shiftsCard tbody{display:block;width:100%}
+    #shiftsCard tbody{display:flex;flex-direction:column;gap:7px;padding:10px}
+    #shiftsCard tbody tr{
+      display:block;position:relative;padding:0;margin:0;
+      border:1px solid var(--line);border-left-width:3px;border-radius:12px;
+      background:var(--panel-2);overflow:hidden;
+    }
+    #shiftsCard tbody tr:last-child{border-bottom:1px solid var(--line)}
+    #shiftsCard tbody tr.row-usual{border-left-color:var(--good)}
+    #shiftsCard tbody tr.row-unusual{border-left-color:var(--ot)}
+    #shiftsCard tbody tr.row-rest{border-left-color:var(--night)}
+    #shiftsCard tbody tr.row-overrest{border-left-color:var(--bad)}
+    #shiftsCard tbody tr > td{display:none}
+    #shiftsCard tbody td.m-summary{display:flex}
+    #shiftsCard td.m-summary::before{content:none}
+
+    .m-summary{display:flex;flex-direction:row;align-items:stretch;min-width:0;padding:0}
+    .m-sum-toggle{
+      flex:1;display:flex;align-items:center;gap:8px;min-width:0;
+      padding:10px 4px 10px 11px;border:0;background:none;color:inherit;
+      text-align:left;cursor:pointer;
+    }
+    .m-sum-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+    .m-sum-date{font-size:12.5px;font-weight:650;color:var(--ink);white-space:nowrap}
+    .m-sum-meta{font-size:11px;color:var(--ink-3);white-space:normal;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .m-sum-right{display:flex;align-items:center;gap:5px;flex:none;padding-right:8px}
+    .m-sum-hours{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+    .m-chevron{width:15px;height:15px;color:var(--ink-3);transition:transform .15s;flex:none}
+    #shiftsCard tr.editing .m-chevron{transform:rotate(180deg)}
+    #shiftsCard tr.row-overrest .m-sum-hours{color:var(--bad)}
+
+    #shiftsCard tr.editing{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px;padding:0 10px 9px}
+    #shiftsCard tr.editing .m-summary{grid-column:1/-1;margin:0 -10px;border-bottom:1px solid var(--line)}
+    #shiftsCard tr.editing > td.cell-input,
+    #shiftsCard tr.editing > td.c-num{display:flex;flex-direction:column;gap:3px;padding:0;width:auto;min-width:0}
+    #shiftsCard tr.editing > td.c-label{grid-column:1/-1}
+    #shiftsCard tr.editing > td.c-num{display:none}
+    #shiftsCard tr.editing > td.c-del{display:flex;flex-direction:row;align-items:center;grid-column:1/-1;justify-content:flex-end;padding:0;position:static;width:auto}
+    #shiftsCard tr.editing > td.c-del::before{content:none}
+    #shiftsCard tr.editing > td.c-del .icon-btn{width:auto;height:36px;padding:0 8px;display:inline-flex;align-items:center;gap:5px;color:var(--ink-3)}
+    #shiftsCard tr.editing > td.c-del .icon-btn::after{content:'Supprimer';font-size:11px;font-weight:550}
+    #shiftsCard tr.editing > td.c-del .icon-btn:hover{background:var(--bad-soft);color:var(--bad)}
+    #shiftsCard tr.editing > td::before{font-size:9px}
+    #shiftsCard tr.editing .cell-input input{font-size:16px;padding:7px 8px}
+    #shiftsCard tr.editing .pause-wrap input{width:100%}
+
+    /* Repos */
+    #restBody{padding:10px}
+    .rest-row{
+      position:relative;display:grid;grid-template-columns:minmax(0,1fr) 76px 34px;
+      grid-template-areas:"date hours del" "note note note";
+      gap:6px 8px;align-items:center;padding:9px 10px;
+      border:1px solid var(--line);border-radius:12px;background:var(--panel-2);
+      margin:0 0 7px;
+    }
+    .rest-row:last-child{margin-bottom:0;border-bottom:1px solid var(--line)}
+    .rest-row [data-field="date"]{grid-area:date}
+    .rest-row .rest-hours{grid-area:hours;justify-content:flex-end}
+    .rest-row .rest-note{grid-area:note}
+    .rest-row .rest-del{grid-area:del;position:static;justify-self:end;width:36px;height:36px}
+    .rest-row input{font-size:16px;padding:7px 8px}
+    .rest-empty{font-size:12.5px;padding:4px 2px 10px}
+
+    /* Mois */
+    .overview-body{padding:8px 10px 12px}
+    .cal-weekdays,.cal-grid{gap:3px}
+    .cal-weekdays{font-size:9px}
+    .cal-cell{min-height:46px;padding:4px;border-radius:8px}
+    .cal-num{font-size:10px}
+    .cal-hours{font-size:10.5px}
+    .cal-sub{display:none}
+
+    /* Année */
+    .year-table tbody tr,.year-table tfoot tr{gap:7px 9px;padding:10px}
+    .year-table td,.year-table tfoot td{font-size:11.5px}
+    .year-table td::before{font-size:8.5px}
+
+    /* Dialogues */
+    dialog{max-height:calc(100dvh - 24px)}
+    .dlg-head{padding:16px 16px 0}
+    .dlg-body{padding:14px 16px 4px;gap:12px}
+    .dlg-foot{position:sticky;bottom:0;z-index:5;background:var(--panel);padding:10px 16px 12px}
+    #settingsDlg .dlg-foot{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    #settingsDlg .dlg-foot .grow{display:none}
+    #settingsDlg .dlg-foot .btn{width:100%;padding:8px 8px;font-size:12px}
+    #resetSettingsBtn{grid-column:1;grid-row:1}
+    #resetDataBtn{grid-column:2;grid-row:1}
+    #cancelSettingsBtn{grid-column:1;grid-row:2}
+    #applySettingsBtn{grid-column:2;grid-row:2}
+    .field input,.field select,.auth-form input{font-size:16px}
+    .usual-block input[type=time]{width:auto;flex:1;max-width:118px;font-size:16px;padding:6px 4px}
+    .usual-block label{font-size:11px}
+    .usual-block input[type=checkbox]{width:16px;height:16px}
+  }
+
+  @media (max-width:360px){
+    .topbar-inner{padding-left:28px;padding-right:12px}
+    main{padding-left:28px;padding-right:12px}
+    .brand-text h1{font-size:15px}
+    .balance-chip{padding:5px 8px}
+    .balance-chip .bc-value{font-size:15px}
+    .stats{gap:6px;padding:8px 10px 0;grid-template-columns:repeat(2,minmax(0,1fr))}
+    .stat{padding:8px}
+    .usual-block{flex-wrap:wrap}
+    .usual-block label{width:100%}
+    .usual-block input[type=time]{max-width:none}
+    #settingsDlg .dlg-foot .btn{font-size:11px;padding:7px 4px}
+    .cal-weekdays{font-size:8px}
+    .cal-num{font-size:9.5px}
+    .cal-hours{font-size:9.5px}
+    .cal-cell{min-height:42px;padding:3px}
+    .year-table tbody tr,.year-table tfoot tr{grid-template-columns:1fr 1fr}
+  }
+
   @media print{
     :root{--bg:#fff;--panel:#fff;--panel-2:#fff;--panel-3:#eee;--ink:#000;--ink-2:#222;--ink-3:#555;--line:#ccc;--line-strong:#bbb;--shadow:none}
     body{background:#fff;padding:0}
@@ -603,7 +799,18 @@
     .empty{display:none}
     .stat{background:#fff}
     .formula{background:#f7f7f7;border-color:#ddd}
-    .topbar-inner{padding:0 0 9px}
+    .topbar-inner{display:flex !important;max-width:none !important;width:100% !important;padding:0 0 9px}
+    .balance-chip{display:none !important}
+    .week-number{border:0 !important;background:transparent !important;width:auto !important;height:auto !important;padding:0 !important;box-shadow:none !important;color:#000 !important;font:inherit !important;text-align:left}
+    .bc-long{display:inline !important}
+    .bc-short{display:none !important}
+    #periodCard .card-head{flex-direction:row !important}
+    .weeknav{display:flex !important}
+    .formula{display:flex !important}
+    .bar-block{display:block !important}
+    .cal-sub{display:block !important}
+    #shiftsCard tbody{display:table-row-group !important;padding:0 !important}
+    .rest-row{display:grid !important;grid-template-areas:none !important;gap:6px;padding:3px 0 !important;border:0 !important;margin:0 !important;border-radius:0 !important;background:transparent !important}
     .card-head{padding:8px 12px}
     .stats{grid-template-columns:repeat(3,1fr);gap:6px;padding:9px 12px 0}
     .stat{padding:6px 9px}
@@ -623,6 +830,7 @@
     .shift-table table{display:table;width:100%}
     .shift-table tbody{display:table-row-group}
     .shift-table tbody tr{display:table-row !important;position:static !important}
+    .shift-table .m-summary{display:none !important}
     .shift-table tbody td{display:table-cell !important;padding:3px 7px;border-bottom:1px solid #e5e5e5}
     .shift-table tbody td::before{content:none !important}
     .shift-table td.c-date{width:88px}
@@ -673,14 +881,14 @@
 
     <div class="balance-chip" id="balanceChip" title="Solde de repos : repos acquis moins repos pris">
       <div>
-        <div class="bc-label">Solde de repos</div>
+        <div class="bc-label"><span class="bc-long">Solde de repos</span><span class="bc-short">Solde</span></div>
         <div class="bc-sub" id="balanceSub">Acquis 0,00 h · Pris 0,00 h</div>
       </div>
       <div class="bc-value" id="balanceValue">0,00 h</div>
     </div>
 
     <div class="actions">
-      <button class="btn icon-only account-btn" id="accountBtn" type="button" title="Compte cloud">
+      <button class="btn icon-only account-btn" id="accountBtn" type="button" title="Compte cloud" aria-label="Compte">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c0-3.3 3.1-6 7-6s7 2.7 7 6"></path></svg>
         <span class="btn-label">Compte</span>
         <span class="account-dot" id="accountDot" hidden></span>
@@ -699,12 +907,12 @@
         </div>
       </div>
 
-      <button class="btn icon-only" id="printBtn" type="button" title="Imprimer la semaine">
+      <button class="btn icon-only" id="printBtn" type="button" title="Imprimer la semaine" aria-label="Imprimer la semaine">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8" rx="1"></rect></svg>
         <span class="btn-label">Imprimer</span>
       </button>
 
-      <button class="btn icon-only" id="settingsBtn" type="button" title="Réglages">
+      <button class="btn icon-only" id="settingsBtn" type="button" title="Réglages" aria-label="Réglages">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.4h-3.84a.48.48 0 0 0-.48.4l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96a.48.48 0 0 0-.59.22L2.74 8.87a.49.49 0 0 0 .12.61l2.03 1.58c-.05.3-.07.62-.07.94 0 .33.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.3.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.4.48.4h3.84c.24 0 .43-.16.48-.4l.36-2.54a7.03 7.03 0 0 0 1.62-.94l2.39.96c.22.09.47 0 .59-.22l1.92-3.32a.49.49 0 0 0-.12-.61l-2.03-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>
       </button>
     </div>
@@ -730,10 +938,16 @@
           <div class="wt-main">
             <span id="weekHeading">Semaine</span>
             <input class="week-number" id="weekNumber" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" spellcheck="false" aria-label="Numéro de semaine" title="Numéro de semaine — Entrée pour valider">
+            <button class="week-go" id="weekGo" type="button" aria-label="Afficher cette semaine" title="Afficher cette semaine">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>
+            </button>
           </div>
           <span class="wt-sub" id="weekRange">—</span>
         </div>
-        <button class="btn today-btn" id="todayBtn" type="button">Aujourd’hui</button>
+        <button class="btn today-btn" id="todayBtn" type="button" aria-label="Aujourd’hui" title="Aujourd’hui">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M8 3v4M16 3v4M3 11h18"></path></svg>
+          <span class="btn-label">Aujourd’hui</span>
+        </button>
       </div>
       <div class="spacer"></div>
       <div class="viewswitch" id="viewSwitch" role="group" aria-label="Période affichée">
@@ -796,9 +1010,9 @@
     <div class="card-head">
       <h2 id="shiftsHeading">Journées de la semaine</h2>
       <div class="spacer"></div>
-      <button class="btn primary" id="addShiftBtn" type="button">
+      <button class="btn primary" id="addShiftBtn" type="button" aria-label="Ajouter une journée">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
-        Ajouter une journée
+        <span class="btn-label">Ajouter une journée</span>
       </button>
     </div>
 
@@ -831,9 +1045,9 @@
     <div class="card-head">
       <h2 id="restsHeading">Repos pris</h2>
       <div class="spacer"></div>
-      <button class="btn" id="addRestBtn" type="button">
+      <button class="btn" id="addRestBtn" type="button" aria-label="Ajouter un repos">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
-        Ajouter
+        <span class="btn-label">Ajouter</span>
       </button>
     </div>
     <div class="card-body" id="restBody">
@@ -885,8 +1099,8 @@
       <label class="field wide">
         <span>Ordre de calcul</span>
         <select name="mode">
-          <option value="sequential">Nuit d’abord, puis HS sur le total majoré</option>
-          <option value="actual">HS sur heures réelles, nuit en repos</option>
+          <option value="sequential" title="Nuit d’abord, puis heures supplémentaires sur le total majoré">Nuit puis HS majorées</option>
+          <option value="actual" title="Heures supplémentaires sur heures réelles, nuit convertie en repos">HS réelles, nuit en repos</option>
         </select>
       </label>
 
@@ -1505,6 +1719,8 @@
   var viewYear = nowInit.getFullYear();
   var viewMode = 'week';
   var weekEditing = false;
+  var weekGoPressed = false;
+  var editingShiftId = null;
   var storageOk = true;
   var toastTimer = null;
 
@@ -2286,6 +2502,16 @@
 
   function capFirst(s){ return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
 
+  function fmtDayShort(iso){
+    var d = parseISODate(iso);
+    return capFirst(new Intl.DateTimeFormat('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }).format(d));
+  }
+
+  function fmtDayLong(iso){
+    var d = parseISODate(iso);
+    return new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }).format(d);
+  }
+
   function fmtMonthTitle(iso){
     var d = parseISODate(iso);
     return capFirst(new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' }).format(d));
@@ -2350,6 +2576,7 @@
     if (viewMode === 'week'){
       els.weekHeading.textContent = 'Semaine';
       els.weekNumber.hidden = false;
+      els.weekGo.hidden = false;
       if (!weekEditing){
         els.weekNumber.value = pad2(isoWeekNumber(parseISODate(viewWeek)));
         els.weekNumber.classList.remove('invalid');
@@ -2358,10 +2585,12 @@
       els.weekRange.textContent = fmtRange(viewWeek);
     } else if (viewMode === 'month'){
       els.weekNumber.hidden = true;
+      els.weekGo.hidden = true;
       els.weekHeading.textContent = fmtMonthTitle(viewMonth);
       els.weekRange.textContent = fmtMonthRange(viewMonth);
     } else {
       els.weekNumber.hidden = true;
+      els.weekGo.hidden = true;
       els.weekHeading.textContent = String(viewYear);
       els.weekRange.textContent = fmtYearRange(viewYear);
     }
@@ -2409,7 +2638,20 @@
     list.forEach(function(s){
       var tr = document.createElement('tr');
       tr.dataset.id = s.id;
+      if (editingShiftId === s.id) tr.classList.add('editing');
       tr.innerHTML =
+        '<td class="m-summary">' +
+          '<button type="button" class="m-sum-toggle js-m-toggle" aria-expanded="' + (editingShiftId === s.id ? 'true' : 'false') + '">' +
+            '<span class="m-sum-main">' +
+              '<span class="m-sum-date js-m-date">' + esc(fmtDayShort(s.date)) + '</span>' +
+              '<span class="m-sum-meta js-m-meta">' + esc(s.start + ' – ' + s.end) + '</span>' +
+            '</span>' +
+            '<span class="m-sum-right">' +
+              '<span class="m-sum-hours js-m-worked">–</span>' +
+              '<svg class="m-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>' +
+            '</span>' +
+          '</button>' +
+        '</td>' +
         '<td class="cell-input c-date" data-label="Jour"><input type="date" value="' + esc(s.date) + '" data-field="date" aria-label="Jour"></td>' +
         '<td class="cell-input c-time" data-label="Début"><input type="time" step="900" value="' + esc(s.start) + '" data-field="start" aria-label="Heure de début"></td>' +
         '<td class="cell-input c-time" data-label="Fin"><input type="time" step="900" value="' + esc(s.end) + '" data-field="end" aria-label="Heure de fin"></td>' +
@@ -2509,6 +2751,21 @@
         }
       }
       tr.title = bits.join(' · ');
+
+      var mDate = tr.querySelector('.js-m-date');
+      var mMeta = tr.querySelector('.js-m-meta');
+      var mWorked = tr.querySelector('.js-m-worked');
+      if (s && mDate && mMeta && mWorked){
+        mDate.textContent = fmtDayShort(s.date);
+        var meta = s.start + ' – ' + s.end;
+        if ((Number(s.pause) || 0) > 0) meta += ' · pause ' + fmtHM((Number(s.pause) || 0) / 60);
+        if (c.night > 0) meta += ' · nuit ' + fmtHM(c.night);
+        if (restH > 0) meta += ' · ' + fmtH(restH) + ' repos';
+        mMeta.textContent = meta;
+        mWorked.textContent = c.invalid ? '0h00' : fmtHM(c.worked);
+        var mToggle = tr.querySelector('.js-m-toggle');
+        if (mToggle) mToggle.setAttribute('aria-label', 'Modifier la journée du ' + fmtDayLong(s.date));
+      }
     });
 
     Array.prototype.forEach.call(els.restList.querySelectorAll('.rest-row'), function(row){
@@ -2588,7 +2845,8 @@
     dates.forEach(function(date, index){
       var sRow = shiftByDate[date];
       var rRow = restByDate[date].row;
-      var sr = sRow.getBoundingClientRect();
+      var sAnchor = sRow.querySelector('.m-summary');
+      var sr = (sAnchor && sAnchor.offsetParent) ? sAnchor.getBoundingClientRect() : sRow.getBoundingClientRect();
       var rr = rRow.getBoundingClientRect();
       var y1 = sr.top + sr.height / 2 - mainRect.top;
       var y2 = rr.top + rr.height / 2 - mainRect.top;
@@ -2938,11 +3196,27 @@
   }
 
   function onShiftClick(e){
+    var toggle = e.target.closest('.js-m-toggle');
+    if (toggle){
+      var row = toggle.closest('tr');
+      if (!row) return;
+      var open = !row.classList.contains('editing');
+      editingShiftId = open ? row.dataset.id : null;
+      Array.prototype.forEach.call(els.shiftBody.querySelectorAll('tr'), function(r){
+        var active = open && r === row;
+        r.classList.toggle('editing', active);
+        var t = r.querySelector('.js-m-toggle');
+        if (t) t.setAttribute('aria-expanded', active ? 'true' : 'false');
+      });
+      scheduleLinks();
+      return;
+    }
     var btn = e.target.closest('.js-del');
     if (!btn) return;
     var tr = btn.closest('tr');
     if (!tr) return;
     if (!confirm('Supprimer cette journée ?')) return;
+    if (editingShiftId === tr.dataset.id) editingShiftId = null;
     state.shifts = state.shifts.filter(function(s){ return s.id !== tr.dataset.id; });
     save();
     renderAll();
@@ -2992,12 +3266,15 @@
       pause: t.pause,
       label: ''
     });
+    editingShiftId = state.shifts[state.shifts.length - 1].id;
     save();
     renderAll();
     var row = els.shiftBody.querySelector('tr[data-id="' + state.shifts[state.shifts.length - 1].id + '"]');
     if (row){
-      var dateInput = row.querySelector('input[data-field="date"]');
-      if (dateInput){ dateInput.focus(); dateInput.select && dateInput.select(); }
+      if (!window.matchMedia('(max-width:700px)').matches){
+        var dateInput = row.querySelector('input[data-field="date"]');
+        if (dateInput){ dateInput.focus(); dateInput.select && dateInput.select(); }
+      }
       row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
     if (target.weekChanged) toast('Journée ajoutée · semaine ' + isoWeekNumber(parseISODate(target.date)));
@@ -3088,6 +3365,7 @@
 
   function stepPeriod(delta){
     weekEditing = false;
+    editingShiftId = null;
     if (viewMode === 'week') viewWeek = isoDate(addDays(parseISODate(viewWeek), delta * 7));
     else if (viewMode === 'month') viewMonth = addMonthsISO(viewMonth, delta);
     else viewYear += delta;
@@ -3096,6 +3374,7 @@
 
   function goToday(){
     weekEditing = false;
+    editingShiftId = null;
     var now = new Date();
     viewWeek = isoDate(startOfWeek(now));
     viewMonth = isoDate(new Date(now.getFullYear(), now.getMonth(), 1));
@@ -3116,7 +3395,7 @@
     els.weekNumber.setAttribute('aria-invalid', 'true');
   }
 
-  function commitWeekNumber(){
+  function commitWeekNumber(refocus){
     if (!els.weekNumber || viewMode !== 'week'){ resetWeekInput(); return; }
     var raw = String(els.weekNumber.value || '').trim();
     if (!/^\d{1,2}$/.test(raw)){ markWeekInputInvalid(); return; }
@@ -3127,18 +3406,23 @@
       markWeekInputInvalid();
       return;
     }
+    weekEditing = false;
     viewWeek = isoDate(monday);
     els.weekNumber.value = pad2(week);
     els.weekNumber.classList.remove('invalid');
     els.weekNumber.removeAttribute('aria-invalid');
     renderAll();
-    els.weekNumber.focus();
-    els.weekNumber.select();
+    if (refocus){
+      weekEditing = true;
+      els.weekNumber.focus();
+      els.weekNumber.select();
+    }
   }
 
   function setViewMode(mode){
     if (mode !== 'week' && mode !== 'month' && mode !== 'year') return;
     weekEditing = false;
+    editingShiftId = null;
     var now = new Date();
     if (mode === 'month' && viewMode !== 'month'){
       if (viewMode === 'year'){
@@ -3179,6 +3463,7 @@
 
   function onOverviewClick(e){
     weekEditing = false;
+    editingShiftId = null;
     var day = e.target.closest('[data-date]');
     if (day){
       viewWeek = isoDate(startOfWeek(parseISODate(day.dataset.date)));
@@ -3412,7 +3697,7 @@
     [
       'storageWarn', 'balanceChip', 'balanceValue', 'balanceSub', 'printBtn',
       'exportBtn', 'exportMenu', 'exportJsonBtn', 'exportCsvTop', 'importMenuBtn', 'settingsBtn',
-      'prevWeek', 'nextWeek', 'weekHeading', 'weekRange', 'weekNumber', 'todayBtn',
+      'prevWeek', 'nextWeek', 'weekHeading', 'weekRange', 'weekNumber', 'weekGo', 'todayBtn',
       'statWorked', 'statWorkedSub', 'statNight', 'statOt', 'statOtSub',
       'statCredit', 'statCreditSub', 'statTaken', 'statTakenSub', 'statBalance', 'statBalanceLabel', 'statBalanceCard',
       'formula', 'barBlock', 'barBase', 'barOt', 'barMark', 'barCaptionLeft', 'barCaptionRight',
@@ -3444,16 +3729,25 @@
     els.weekNumber.addEventListener('keydown', function(e){
       if (e.key === 'Enter'){
         e.preventDefault();
-        commitWeekNumber();
+        commitWeekNumber(true);
       } else if (e.key === 'Escape'){
         e.preventDefault();
         resetWeekInput();
         this.blur();
       }
     });
-    els.weekNumber.addEventListener('blur', function(){
+    els.weekNumber.addEventListener('blur', function(e){
+      if (weekGoPressed || (e.relatedTarget && e.relatedTarget.id === 'weekGo')) return;
       weekEditing = false;
       resetWeekInput();
+    });
+    els.weekGo.addEventListener('pointerdown', function(){
+      weekGoPressed = true;
+      setTimeout(function(){ weekGoPressed = false; }, 800);
+    });
+    els.weekGo.addEventListener('click', function(){
+      weekGoPressed = false;
+      commitWeekNumber(false);
     });
     els.viewSwitch.addEventListener('click', function(e){
       var btn = e.target.closest('[data-view]');

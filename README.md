@@ -32,6 +32,10 @@ Exemple : 08h00 → 01h00 avec 1 h de pause = 16 h travaillées, dont **1 h de n
 
 Les horaires et les pauses sont arrondis au quart d'heure (00, 15, 30, 45). Une valeur saisie à 08h07 devient 08h00 ; une pause de 50 min devient 45 min. Les heures de repos se saisissent aussi par quart d'heure (0,25 h = 15 min).
 
+## Sur mobile
+
+Chaque journée s'affiche sous forme de carte compacte : touchez la carte pour ouvrir la saisie, puis son en-tête pour la replier. Le numéro de semaine se valide avec le bouton ✓ ou la touche **Entrée**. Les réglages gardent leurs boutons d'action visibles en bas de l'écran.
+
 ## Horaires habituels et couleurs
 
 Les horaires habituels se règlent dans **Réglages → Horaires habituels**. Pour chaque jour, cochez le matin et/ou l'après-midi, puis indiquez les heures. Les modifications s'appliquent immédiatement à toutes les semaines. Par défaut :
