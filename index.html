@@ -396,19 +396,23 @@
   .empty .btn{margin:0 auto}
 
   /* ---------- Repos ---------- */
-  .rest-row{display:grid;grid-template-columns:136px 96px 1fr 34px;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}
-  .rest-row:last-of-type{border-bottom:0}
-  .rest-row.rest-auto{
-    grid-template-columns:120px 90px 1fr auto;gap:8px;
-    background:color-mix(in srgb, var(--night-soft) 55%, var(--panel));
-    border:1px solid color-mix(in srgb, var(--night) 18%, var(--line));
-    border-radius:10px;padding:8px 10px;margin:4px 0;
+  .rest-row{
+    display:grid;grid-template-columns:136px 96px 1fr 40px;gap:8px;align-items:center;
+    padding:8px 10px;border:1px solid color-mix(in srgb, var(--night) 18%, var(--line));
+    border-radius:10px;background:color-mix(in srgb, var(--night-soft) 55%, var(--panel));
+    margin:4px 0;
   }
-  .rest-auto-date{font-size:12.5px;font-weight:600;color:var(--ink);align-self:center}
-  .rest-auto-hours{font-size:13px;font-weight:650;color:var(--night);font-variant-numeric:tabular-nums;align-self:center}
-  .rest-auto-note{font-size:11.5px;color:var(--ink-3);align-self:center}
-  .rest-auto-badge{font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--night);border:1px solid color-mix(in srgb, var(--night) 25%, transparent);border-radius:999px;padding:2px 7px;justify-self:end;white-space:nowrap;align-self:center}
-  .rest-row.over-rest{background:color-mix(in srgb, var(--bad-soft) 65%, transparent);border-radius:8px;padding-left:6px;padding-right:6px}
+  .rest-row:last-of-type{margin-bottom:0}
+  .rest-auto-date,.rest-auto-hours,.rest-auto-note{
+    min-width:0;padding:7px 8px;border:1px solid var(--line);border-radius:8px;
+    background:var(--panel-2);color:var(--ink);font-size:14px;line-height:1.45;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .rest-auto-hours{font-weight:650;font-variant-numeric:tabular-nums}
+  .rest-auto-note{font-size:14px;color:var(--ink-2)}
+  .rest-auto-lock{width:34px;height:30px;display:grid;place-items:center;color:var(--ink-3);justify-self:end}
+  .rest-auto-lock svg{width:14px;height:14px}
+  .rest-row.over-rest{background:color-mix(in srgb, var(--bad-soft) 65%, transparent);border-color:color-mix(in srgb, var(--bad) 35%, var(--line))}
   .rest-row.over-rest input{border-color:color-mix(in srgb, var(--bad) 38%, var(--line))}
   .rest-row input{
     width:100%;min-width:0;padding:7px 8px;border-radius:8px;
@@ -816,22 +820,23 @@
     /* Repos */
     #restBody{padding:10px}
     .rest-row{
-      position:relative;display:grid;grid-template-columns:minmax(0,1fr) 76px 34px;
+      position:relative;display:grid;grid-template-columns:minmax(0,1fr) 76px 40px;
       grid-template-areas:"date hours del" "note note note";
       gap:6px 8px;align-items:center;padding:9px 10px;
-      border:1px solid var(--line);border-radius:12px;background:var(--panel-2);
+      border:1px solid color-mix(in srgb, var(--night) 18%, var(--line));border-radius:12px;
+      background:color-mix(in srgb, var(--night-soft) 55%, var(--panel));
       margin:0 0 7px;
     }
-    .rest-row:last-child{margin-bottom:0;border-bottom:1px solid var(--line)}
+    .rest-row:last-child{margin-bottom:0}
     .rest-row [data-field="date"]{grid-area:date}
     .rest-row .rest-hours{grid-area:hours;justify-content:flex-end}
     .rest-row .rest-note{grid-area:note}
     .rest-row .rest-del{grid-area:del;position:static;justify-self:end;width:36px;height:36px}
-    .rest-row.rest-auto{grid-template-columns:minmax(0,1fr) 76px 48px;grid-template-areas:"date hours badge" "note note note";padding:9px 10px}
     .rest-auto-date{grid-area:date}
-    .rest-auto-hours{grid-area:hours;justify-self:end}
+    .rest-auto-hours{grid-area:hours;justify-self:stretch}
     .rest-auto-note{grid-area:note}
-    .rest-auto-badge{grid-area:badge;justify-self:end}
+    .rest-auto-lock{grid-area:del;justify-self:end}
+    .rest-auto-date,.rest-auto-hours,.rest-auto-note{font-size:16px;padding:7px 8px}
     .rest-row input{font-size:16px;padding:7px 8px}
     .rest-empty{font-size:12.5px;padding:4px 2px 10px}
 
@@ -939,6 +944,8 @@
     .card-body{padding:11px 12px}
     .rest-row{grid-template-columns:96px 62px 1fr;padding:3px 0}
     .rest-row input{font-size:10.5px;padding:3px 5px;background:transparent !important;border:0 !important;background-image:none !important}
+    .rest-auto-date,.rest-auto-hours,.rest-auto-note{background:transparent !important;border:0 !important;padding:0 !important;font-size:10.5px !important;white-space:normal !important}
+    .rest-auto-lock{display:none !important}
     .shift-table thead{display:table-header-group}
     .shift-table table{display:table;width:100%}
     .shift-table tbody{display:table-row-group}
@@ -2724,6 +2731,7 @@
   function weekHasLinks(){
     var byDate = {};
     weekShifts().forEach(function(s){ if (s.date) byDate[s.date] = true; });
+    if (weekOffShifts().some(function(s){ return offHoursForDate(s.date) > 0; })) return true;
     return weekRests().some(function(r){
       return !offShiftForDate(r.date) && byDate[r.date] && (Number(r.hours) || 0) > 0;
     });
@@ -2927,7 +2935,9 @@
           '<div class="rest-auto-date">' + esc(fmtDayShort(item.date)) + '</div>' +
           '<div class="rest-auto-hours">' + esc(fmtH(item.hours)) + '</div>' +
           '<div class="rest-auto-note">Journée off</div>' +
-          '<span class="rest-auto-badge">Auto</span>';
+          '<span class="rest-auto-lock" title="Repos automatique — décochez Off pour le supprimer" aria-label="Repos automatique">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>' +
+          '</span>';
         els.restList.appendChild(auto);
         return;
       }
@@ -3132,7 +3142,7 @@
     }
 
     var shiftRows = els.shiftBody ? els.shiftBody.querySelectorAll('tr') : [];
-    var restRows = els.restList ? els.restList.querySelectorAll('.rest-row:not(.rest-auto)') : [];
+    var restRows = els.restList ? els.restList.querySelectorAll('.rest-row') : [];
     if (!shiftRows.length || !restRows.length){
       setLinkGutter(false);
       if (els.linkGutter) els.linkGutter.classList.remove('show');
@@ -3148,10 +3158,12 @@
 
     var restByDate = {};
     Array.prototype.forEach.call(restRows, function(row){
-      var r = findRest(row.dataset.id);
-      if (!r || !r.date) return;
-      if (!restByDate[r.date]) restByDate[r.date] = { row: row, hours: 0 };
-      restByDate[r.date].hours += Math.max(0, Number(r.hours) || 0);
+      var r = row.dataset.id ? findRest(row.dataset.id) : null;
+      var date = r ? r.date : row.dataset.date;
+      if (!date) return;
+      var hours = r ? Math.max(0, Number(r.hours) || 0) : offHoursForDate(date);
+      if (!restByDate[date]) restByDate[date] = { row: row, hours: 0 };
+      restByDate[date].hours += hours;
     });
 
     var dates = Object.keys(shiftByDate).filter(function(d){
