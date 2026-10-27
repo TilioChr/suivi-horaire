@@ -449,7 +449,6 @@
   .cal-cell.cal-rest{background:color-mix(in srgb,var(--night-soft) 86%,var(--panel));border-color:color-mix(in srgb,var(--night) 22%,var(--line))}
   .cal-cell.cal-restonly{background:color-mix(in srgb,var(--night-soft) 55%,var(--panel));border-color:color-mix(in srgb,var(--night) 18%,var(--line))}
   .cal-cell.cal-off{background:color-mix(in srgb,var(--night-soft) 55%,var(--panel));border-color:color-mix(in srgb,var(--night) 18%,var(--line))}
-  .cal-cell.cal-off .cal-off-label{color:var(--night);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
   .cal-cell.cal-overrest{background:color-mix(in srgb,var(--bad-soft) 82%,var(--panel));border-color:color-mix(in srgb,var(--bad) 24%,var(--line))}
   .cal-cell.cal-overrest .cal-sub{color:var(--bad)}
   .cal-cell.cal-today{outline:2px solid var(--accent);outline-offset:-2px}
@@ -844,10 +843,10 @@
     .overview-body{padding:8px 10px 12px}
     .cal-weekdays,.cal-grid{gap:3px}
     .cal-weekdays{font-size:9px}
-    .cal-cell{min-height:46px;padding:4px;border-radius:8px}
+    .cal-cell{min-height:50px;padding:4px;border-radius:8px;gap:0}
     .cal-num{font-size:10px}
     .cal-hours{font-size:10.5px}
-    .cal-sub{display:none}
+    .cal-sub{display:block;font-size:8px;line-height:1.15}
 
     /* Année */
     .year-table tbody tr,.year-table tfoot tr{gap:7px 9px;padding:10px}
@@ -888,7 +887,8 @@
     .cal-weekdays{font-size:8px}
     .cal-num{font-size:9.5px}
     .cal-hours{font-size:9.5px}
-    .cal-cell{min-height:42px;padding:3px}
+    .cal-sub{font-size:7px}
+    .cal-cell{min-height:46px;padding:3px}
     .year-table tbody tr,.year-table tfoot tr{grid-template-columns:1fr 1fr}
   }
 
@@ -3338,10 +3338,8 @@
       var title = bits.join(' · ');
       html += '<button type="button" class="' + classes + '" data-date="' + dateISO + '" title="' + esc(title) + '" aria-label="' + esc(title) + '">';
       html += '<span class="cal-num">' + day + '</span>';
-      if (worked > 0) html += '<span class="cal-hours">' + fmtCal(worked) + '</span>';
-      else if (rest > 0) html += '<span class="cal-hours">' + fmtCal(rest) + '</span>';
-      else if (allOff) html += '<span class="cal-hours cal-off-label">off</span>';
-      if (rest > 0) html += '<span class="cal-sub">' + (worked > 0 ? '+' + fmtCal(rest) + ' repos' : 'repos') + '</span>';
+      if (worked > 0 || rest > 0 || dayShifts.length) html += '<span class="cal-hours">' + fmtCal(worked) + '</span>';
+      if (rest > 0) html += '<span class="cal-sub">' + fmtCal(rest) + ' repos</span>';
       else if (night > 0) html += '<span class="cal-sub">' + fmtCal(night) + ' nuit</span>';
       html += '</button>';
     }
