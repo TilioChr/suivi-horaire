@@ -44,7 +44,7 @@ Une **journée complète** correspondant à ces horaires est affichée en **vert
 
 **Repos trop long** : si le repos pris un jour dépasse la durée habituelle de ce jour, la journée, le repos et le fil de liaison passent en **rouge**. Exemple : avec un mercredi habituel de 14h–18h (4 h), 4 h 30 de repos ce jour-là déclenchent le rouge.
 
-Un **fil** relie, sur le bord gauche, la ligne de la journée à la ligne de repos du même jour.
+Un **fil** relie, sur le bord gauche, la ligne de la journée à la ligne de repos du même jour. Les fils sont espacés et s'éclaircissent progressivement pour distinguer les journées.
 
 Deux façons de saisir une journée habituelle complète sont reconnues :
 
@@ -90,10 +90,12 @@ Les données sont stockées dans votre projet Supabase, accessibles uniquement p
 ## Utilisation
 
 1. **Journées** : « Ajouter une journée », puis le jour, les heures de début/fin, la pause en minutes et un libellé.
+   - La date est préremplie avec la prochaine journée de la semaine : après lundi et mardi, l'ajout propose le mercredi. Si la semaine est complète, la semaine suivante s'ouvre.
    - Une fin avant le début signifie que la vacation passe minuit.
    - Vert = journée habituelle complète, orangé = journée incomplète ou décalée, violet = journée incomplète avec repos le même jour, rouge = repos supérieur à la durée habituelle du jour.
 2. **Repos pris** : saisissez les heures de repos posées ; elles sont déduites du solde et rappelées sur la ligne de la journée concernée.
 3. **Période** : choisissez **Semaine**, **Mois** ou **Année** en haut à droite. Les flèches ‹ › font défiler la période et « Aujourd'hui » revient à la période en cours.
+   - En vue semaine, le numéro est modifiable : saisissez-le et appuyez sur **Entrée**. Une semaine inexistante pour l'année est refusée et la semaine affichée reste inchangée.
 4. **Réglages** (roue dentée) : calcul, horaires habituels et règles détaillées.
 5. **Sauvegarde** (en haut) : exporter le JSON ou le CSV, ou importer une sauvegarde.
 6. **Compte** (icône personne) : connexion, création de compte, synchronisation cloud, déconnexion.

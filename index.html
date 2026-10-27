@@ -223,7 +223,15 @@
   /* ---------- Week ---------- */
   .weeknav{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .week-title{display:flex;flex-direction:column;gap:1px;margin-left:4px;min-width:190px}
-  .week-title .wt-main{font-size:15px;font-weight:650;letter-spacing:-.01em}
+  .week-title .wt-main{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:650;letter-spacing:-.01em}
+  .week-number{
+    width:3.4ch;padding:1px 3px;border:1px solid var(--line);border-radius:6px;
+    background:var(--panel-2);color:inherit;font:inherit;font-variant-numeric:tabular-nums;
+    text-align:center;cursor:text;transition:background .15s,border-color .15s;
+  }
+  .week-number:hover{background:var(--panel);border-color:var(--line-strong)}
+  .week-number:focus{outline:none;background:var(--panel);border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent)}
+  .week-number.invalid{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
   .week-title .wt-sub{font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums}
   .nav-btn{
     width:32px;height:32px;display:grid;place-items:center;border-radius:9px;
@@ -310,9 +318,9 @@
   tbody tr.row-overrest .day-rest-note{color:var(--bad)}
 
   .link-layer{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:4}
-  .link-layer path{fill:none;stroke:var(--night);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;opacity:.6}
-  .link-layer circle{fill:var(--night);stroke:var(--panel);stroke-width:1.4;opacity:.9}
-  .link-layer path.link-overrest{stroke:var(--bad);opacity:.7}
+  .link-layer path{fill:none;stroke:var(--night);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;opacity:.88}
+  .link-layer circle{fill:var(--night);stroke:var(--panel);stroke-width:1.4;opacity:1}
+  .link-layer path.link-overrest{stroke:var(--bad)}
   .link-layer circle.link-overrest{fill:var(--bad)}
 
   .cell-input input{
@@ -460,6 +468,11 @@
     color:var(--ot);font-size:12.5px;
   }
 
+  @media (max-width:1180px){
+    main{padding-left:34px}
+    .topbar-inner{padding-left:34px}
+  }
+
   @media (max-width:1040px){
     .shift-table thead{display:none}
     .shift-table table,.shift-table tbody{display:block;width:100%}
@@ -498,8 +511,8 @@
     .shift-table .row-warn{background:var(--ot-soft)}
   }
   @media (max-width:820px){
-    .topbar-inner{padding:10px 16px;gap:10px}
-    main{padding:16px}
+    .topbar-inner{padding:10px 16px 10px 34px;gap:10px}
+    main{padding:16px 16px 16px 34px}
     .stats{grid-template-columns:repeat(2,1fr)}
     .formula{margin:12px 16px 0}
     .farrow{display:none}
@@ -714,7 +727,10 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
         </button>
         <div class="week-title">
-          <span class="wt-main" id="weekHeading">Semaine</span>
+          <div class="wt-main">
+            <span id="weekHeading">Semaine</span>
+            <input class="week-number" id="weekNumber" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" spellcheck="false" aria-label="Numéro de semaine" title="Numéro de semaine — Entrée pour valider">
+          </div>
           <span class="wt-sub" id="weekRange">—</span>
         </div>
         <button class="btn today-btn" id="todayBtn" type="button">Aujourd’hui</button>
@@ -1030,6 +1046,18 @@
     var fwd = (firstThursday.getDay() + 6) % 7;
     firstThursday.setDate(firstThursday.getDate() - fwd + 3);
     return 1 + Math.round((t.getTime() - firstThursday.getTime()) / (7 * DAY));
+  }
+
+  function isoWeekYear(d){
+    var t = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    var wd = (t.getDay() + 6) % 7;
+    t.setDate(t.getDate() - wd + 3);
+    return t.getFullYear();
+  }
+
+  function isoWeekStart(year, week){
+    var monday = startOfWeek(new Date(year, 0, 4));
+    return addDays(monday, (week - 1) * 7);
   }
 
   function weekKeyOf(dateISO){
@@ -1476,6 +1504,7 @@
   var viewMonth = isoDate(new Date(nowInit.getFullYear(), nowInit.getMonth(), 1));
   var viewYear = nowInit.getFullYear();
   var viewMode = 'week';
+  var weekEditing = false;
   var storageOk = true;
   var toastTimer = null;
 
@@ -2319,12 +2348,20 @@
   /* ---------------- render ---------------- */
   function renderPeriodHeader(){
     if (viewMode === 'week'){
-      els.weekHeading.textContent = 'Semaine ' + isoWeekNumber(parseISODate(viewWeek));
+      els.weekHeading.textContent = 'Semaine';
+      els.weekNumber.hidden = false;
+      if (!weekEditing){
+        els.weekNumber.value = pad2(isoWeekNumber(parseISODate(viewWeek)));
+        els.weekNumber.classList.remove('invalid');
+        els.weekNumber.removeAttribute('aria-invalid');
+      }
       els.weekRange.textContent = fmtRange(viewWeek);
     } else if (viewMode === 'month'){
+      els.weekNumber.hidden = true;
       els.weekHeading.textContent = fmtMonthTitle(viewMonth);
       els.weekRange.textContent = fmtMonthRange(viewMonth);
     } else {
+      els.weekNumber.hidden = true;
       els.weekHeading.textContent = String(viewYear);
       els.weekRange.textContent = fmtYearRange(viewYear);
     }
@@ -2543,8 +2580,10 @@
     if (!shiftCard || !restCard) return;
     var cardLeft = shiftCard.getBoundingClientRect().left - mainRect.left;
     var narrow = mainRect.width < 900;
-    var baseOffset = 8;
-    var step = narrow ? 4 : 5;
+    var count = dates.length;
+    var maxRail = cardLeft - 9;
+    var minRail = narrow ? 2 : Math.max(-40, 6 - mainRect.left);
+    var step = count > 1 ? Math.min(11, Math.max(2.5, (maxRail - minRail) / (count - 1))) : 0;
 
     dates.forEach(function(date, index){
       var sRow = shiftByDate[date];
@@ -2555,7 +2594,7 @@
       var y2 = rr.top + rr.height / 2 - mainRect.top;
       if (y2 <= y1) return;
 
-      var railX = Math.max(narrow ? 4 : 6, cardLeft - baseOffset - index * step);
+      var railX = maxRail - index * step;
       var x1 = cardLeft;
       var x2 = rr.left - mainRect.left - 6;
       var radius = Math.max(2, Math.min(6, (y2 - y1) / 2, Math.abs(x1 - railX) / 2));
@@ -2569,19 +2608,27 @@
       var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       path.setAttribute('d', d);
       var overRest = isOverRest(restByDate[date].hours, date, state.settings);
+      var tone = linkTone(index, count, overRest);
       if (overRest) path.setAttribute('class', 'link-overrest');
+      path.style.stroke = tone;
       svg.appendChild(path);
-      addLinkDot(svg, x1, y1, overRest);
-      addLinkDot(svg, x2, y2, overRest);
+      addLinkDot(svg, x1, y1, tone);
+      addLinkDot(svg, x2, y2, tone);
     });
   }
 
-  function addLinkDot(svg, cx, cy, overRest){
+  function linkTone(index, count, overRest){
+    var pct = count > 1 ? 100 - (index * 35 / (count - 1)) : 100;
+    var base = overRest ? 'var(--bad)' : 'var(--night)';
+    return 'color-mix(in srgb, ' + base + ' ' + pct.toFixed(1) + '%, #fff)';
+  }
+
+  function addLinkDot(svg, cx, cy, tone){
     var dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     dot.setAttribute('cx', cx);
     dot.setAttribute('cy', cy);
     dot.setAttribute('r', 2.6);
-    if (overRest) dot.setAttribute('class', 'link-overrest');
+    dot.style.fill = tone;
     svg.appendChild(dot);
   }
 
@@ -2824,8 +2871,10 @@
       s.pause = Math.max(0, Number(input.value) || 0);
     } else if (f === 'label'){
       s.label = input.value;
-    } else {
+    } else if (f === 'start' || f === 'end'){
       s[f] = input.value;
+    } else {
+      return;
     }
     save();
     refreshCalcs();
@@ -2860,15 +2909,13 @@
 
     if (f !== 'date') return;
 
-    if (!input.value){
-      input.value = viewWeek;
-      s.date = viewWeek;
-      save();
-      toast('Date obligatoire');
-      refreshCalcs();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(input.value || '')){
+      input.value = s.date;
       return;
     }
-    var oldDate = input.defaultValue || s.date;
+    if (input.value === s.date) return;
+
+    var oldDate = s.date;
     var wasPrimary = isPrimaryUsual({ date: oldDate, start: s.start, end: s.end, pause: s.pause }, oldDate, state.settings);
     s.date = input.value;
     if (wasPrimary){
@@ -2902,14 +2949,44 @@
     toast('Journée supprimée');
   }
 
+  function nextShiftDate(){
+    var usedInWeek = {};
+    var usedAll = {};
+    var latest = null;
+    state.shifts.forEach(function(s){
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(s.date || '')) return;
+      usedAll[s.date] = true;
+      if (weekKeyOf(s.date) !== viewWeek) return;
+      usedInWeek[s.date] = true;
+      if (!latest || s.date > latest) latest = s.date;
+    });
+    var todayISO = isoDate(new Date());
+    var candidate = latest
+      ? isoDate(addDays(parseISODate(latest), 1))
+      : (weekKeyOf(todayISO) === viewWeek ? todayISO : viewWeek);
+    var guard = 0;
+    while (usedInWeek[candidate] && guard < 14){
+      candidate = isoDate(addDays(parseISODate(candidate), 1));
+      guard++;
+    }
+    var weekChanged = false;
+    if (weekKeyOf(candidate) !== viewWeek){
+      weekChanged = true;
+      while (usedAll[candidate] && guard < 366){
+        candidate = isoDate(addDays(parseISODate(candidate), 1));
+        guard++;
+      }
+    }
+    return { date: candidate, weekChanged: weekChanged };
+  }
+
   function addShift(){
-    var today = new Date();
-    var todayISO = isoDate(today);
-    var date = weekKeyOf(todayISO) === viewWeek ? todayISO : viewWeek;
-    var t = defaultShiftTimes(date, state.settings);
+    var target = nextShiftDate();
+    if (target.weekChanged) viewWeek = weekKeyOf(target.date);
+    var t = defaultShiftTimes(target.date, state.settings);
     state.shifts.push({
       id: uid(),
-      date: date,
+      date: target.date,
       start: t.start,
       end: t.end,
       pause: t.pause,
@@ -2923,6 +3000,7 @@
       if (dateInput){ dateInput.focus(); dateInput.select && dateInput.select(); }
       row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
+    if (target.weekChanged) toast('Journée ajoutée · semaine ' + isoWeekNumber(parseISODate(target.date)));
   }
 
   function onRestInput(e){
@@ -2934,8 +3012,10 @@
     if (!r) return;
     if (input.dataset.field === 'hours'){
       r.hours = Math.max(0, Number(input.value) || 0);
+    } else if (input.dataset.field === 'note'){
+      r.note = input.value;
     } else {
-      r[input.dataset.field] = input.value;
+      return;
     }
     save();
     refreshCalcs();
@@ -2960,13 +3040,11 @@
 
     if (input.dataset.field !== 'date') return;
 
-    if (!input.value){
-      input.value = viewWeek;
-      r.date = viewWeek;
-      save();
-      refreshCalcs();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(input.value || '')){
+      input.value = r.date;
       return;
     }
+    if (input.value === r.date) return;
     r.date = input.value;
     save();
     var targetWeek = weekKeyOf(r.date);
@@ -3009,6 +3087,7 @@
   }
 
   function stepPeriod(delta){
+    weekEditing = false;
     if (viewMode === 'week') viewWeek = isoDate(addDays(parseISODate(viewWeek), delta * 7));
     else if (viewMode === 'month') viewMonth = addMonthsISO(viewMonth, delta);
     else viewYear += delta;
@@ -3016,6 +3095,7 @@
   }
 
   function goToday(){
+    weekEditing = false;
     var now = new Date();
     viewWeek = isoDate(startOfWeek(now));
     viewMonth = isoDate(new Date(now.getFullYear(), now.getMonth(), 1));
@@ -3023,8 +3103,42 @@
     renderAll();
   }
 
+  function resetWeekInput(){
+    if (!els.weekNumber) return;
+    els.weekNumber.value = pad2(isoWeekNumber(parseISODate(viewWeek)));
+    els.weekNumber.classList.remove('invalid');
+    els.weekNumber.removeAttribute('aria-invalid');
+  }
+
+  function markWeekInputInvalid(){
+    if (!els.weekNumber) return;
+    els.weekNumber.classList.add('invalid');
+    els.weekNumber.setAttribute('aria-invalid', 'true');
+  }
+
+  function commitWeekNumber(){
+    if (!els.weekNumber || viewMode !== 'week'){ resetWeekInput(); return; }
+    var raw = String(els.weekNumber.value || '').trim();
+    if (!/^\d{1,2}$/.test(raw)){ markWeekInputInvalid(); return; }
+    var week = Number(raw);
+    var year = isoWeekYear(parseISODate(viewWeek));
+    var monday = week >= 1 && week <= 53 ? isoWeekStart(year, week) : null;
+    if (!monday || isoWeekNumber(monday) !== week || isoWeekYear(monday) !== year){
+      markWeekInputInvalid();
+      return;
+    }
+    viewWeek = isoDate(monday);
+    els.weekNumber.value = pad2(week);
+    els.weekNumber.classList.remove('invalid');
+    els.weekNumber.removeAttribute('aria-invalid');
+    renderAll();
+    els.weekNumber.focus();
+    els.weekNumber.select();
+  }
+
   function setViewMode(mode){
     if (mode !== 'week' && mode !== 'month' && mode !== 'year') return;
+    weekEditing = false;
     var now = new Date();
     if (mode === 'month' && viewMode !== 'month'){
       if (viewMode === 'year'){
@@ -3064,6 +3178,7 @@
   }
 
   function onOverviewClick(e){
+    weekEditing = false;
     var day = e.target.closest('[data-date]');
     if (day){
       viewWeek = isoDate(startOfWeek(parseISODate(day.dataset.date)));
@@ -3297,7 +3412,7 @@
     [
       'storageWarn', 'balanceChip', 'balanceValue', 'balanceSub', 'printBtn',
       'exportBtn', 'exportMenu', 'exportJsonBtn', 'exportCsvTop', 'importMenuBtn', 'settingsBtn',
-      'prevWeek', 'nextWeek', 'weekHeading', 'weekRange', 'todayBtn',
+      'prevWeek', 'nextWeek', 'weekHeading', 'weekRange', 'weekNumber', 'todayBtn',
       'statWorked', 'statWorkedSub', 'statNight', 'statOt', 'statOtSub',
       'statCredit', 'statCreditSub', 'statTaken', 'statTakenSub', 'statBalance', 'statBalanceLabel', 'statBalanceCard',
       'formula', 'barBlock', 'barBase', 'barOt', 'barMark', 'barCaptionLeft', 'barCaptionRight',
@@ -3319,6 +3434,27 @@
     els.prevWeek.addEventListener('click', function(){ stepPeriod(-1); });
     els.nextWeek.addEventListener('click', function(){ stepPeriod(1); });
     els.todayBtn.addEventListener('click', goToday);
+    els.weekNumber.addEventListener('focus', function(){ weekEditing = true; this.select(); });
+    els.weekNumber.addEventListener('input', function(){
+      var digits = this.value.replace(/\D/g, '').slice(0, 2);
+      if (digits !== this.value) this.value = digits;
+      this.classList.remove('invalid');
+      this.removeAttribute('aria-invalid');
+    });
+    els.weekNumber.addEventListener('keydown', function(e){
+      if (e.key === 'Enter'){
+        e.preventDefault();
+        commitWeekNumber();
+      } else if (e.key === 'Escape'){
+        e.preventDefault();
+        resetWeekInput();
+        this.blur();
+      }
+    });
+    els.weekNumber.addEventListener('blur', function(){
+      weekEditing = false;
+      resetWeekInput();
+    });
     els.viewSwitch.addEventListener('click', function(e){
       var btn = e.target.closest('[data-view]');
       if (btn) setViewMode(btn.dataset.view);
