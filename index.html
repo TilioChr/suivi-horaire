@@ -3189,10 +3189,8 @@
     var cardLeft = shiftCard.getBoundingClientRect().left - mainRect.left;
     positionLinkGutter(shiftCard, restCard, mainRect, cardLeft);
     var count = dates.length;
-    var maxRail = cardLeft - 9;
-    var laneLayout = window.matchMedia('(max-width:1180px)').matches;
-    var minRail = laneLayout ? 8 : Math.max(-40, 6 - mainRect.left);
-    var step = count > 1 ? Math.min(11, Math.max(2.4, (maxRail - minRail) / (count - 1))) : 0;
+    var railX = Math.max(8, Math.round(cardLeft / 2));
+    var links = [];
 
     dates.forEach(function(date, index){
       var sRow = shiftByDate[date];
@@ -3203,27 +3201,43 @@
       var y1 = sr.top + sr.height / 2 - mainRect.top;
       var y2 = rr.top + rr.height / 2 - mainRect.top;
       if (y2 <= y1) return;
+      links.push({
+        y1: y1, y2: y2,
+        x1: cardLeft,
+        x2: rr.left - mainRect.left - 6,
+        overRest: !!restIssueForDate(date),
+        tone: linkTone(index, count, !!restIssueForDate(date))
+      });
+    });
 
-      var railX = maxRail - index * step;
-      var x1 = cardLeft;
-      var x2 = rr.left - mainRect.left - 6;
-      var radius = Math.max(2, Math.min(6, (y2 - y1) / 2, Math.abs(x1 - railX) / 2));
-      var d = 'M ' + x1 + ' ' + y1 +
-        ' H ' + (railX + radius) +
-        ' Q ' + railX + ' ' + y1 + ' ' + railX + ' ' + (y1 + radius) +
-        ' V ' + (y2 - radius) +
-        ' Q ' + railX + ' ' + y2 + ' ' + (railX + radius) + ' ' + y2 +
-        ' H ' + x2;
+    if (!links.length){
+      setLinkGutter(false);
+      return;
+    }
 
+    var topY = links[0].y1;
+    var bottomY = links[0].y2;
+    links.forEach(function(l){
+      if (l.y1 < topY) topY = l.y1;
+      if (l.y2 > bottomY) bottomY = l.y2;
+    });
+
+    var rail = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    rail.setAttribute('d', 'M ' + railX + ' ' + topY + ' V ' + bottomY);
+    rail.style.stroke = linkTone(0, count, false);
+    svg.appendChild(rail);
+
+    links.forEach(function(l){
       var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      path.setAttribute('d', d);
-      var overRest = !!restIssueForDate(date);
-      var tone = linkTone(index, count, overRest);
-      if (overRest) path.setAttribute('class', 'link-overrest');
-      path.style.stroke = tone;
+      path.setAttribute('d',
+        'M ' + l.x1 + ' ' + l.y1 + ' H ' + railX +
+        ' M ' + railX + ' ' + l.y2 + ' H ' + l.x2
+      );
+      if (l.overRest) path.setAttribute('class', 'link-overrest');
+      path.style.stroke = l.tone;
       svg.appendChild(path);
-      addLinkDot(svg, x1, y1, tone);
-      addLinkDot(svg, x2, y2, tone);
+      addLinkDot(svg, l.x1, l.y1, l.tone);
+      addLinkDot(svg, l.x2, l.y2, l.tone);
     });
   }
 
