@@ -732,18 +732,17 @@
     #shiftsCard table,#shiftsCard tbody{display:block;width:100%}
     #shiftsCard tbody{display:flex;flex-direction:column;gap:7px;padding:10px}
     #shiftsCard tbody tr{
-      --accent:transparent;
       display:block;position:relative;padding:0;margin:0;
-      border:1px solid var(--line);border-left:3px solid var(--accent);
+      border:1px solid var(--line);border-left:3px solid var(--panel-2);
       border-radius:3px 12px 12px 3px;
       background:var(--panel-2);overflow:hidden;
     }
     #shiftsCard tbody tr:last-child{border-bottom:1px solid var(--line)}
-    #shiftsCard tbody tr.row-usual{--accent:var(--good)}
-    #shiftsCard tbody tr.row-unusual{--accent:var(--ot)}
-    #shiftsCard tbody tr.row-rest{--accent:var(--night)}
-    #shiftsCard tbody tr.row-off{--accent:var(--night)}
-    #shiftsCard tbody tr.row-overrest{--accent:var(--bad)}
+    #shiftsCard tbody tr.row-usual{border-left-color:var(--good)}
+    #shiftsCard tbody tr.row-unusual{border-left-color:var(--ot)}
+    #shiftsCard tbody tr.row-rest{border-left-color:var(--night)}
+    #shiftsCard tbody tr.row-off{border-left-color:var(--night)}
+    #shiftsCard tbody tr.row-overrest{border-left-color:var(--bad)}
     #shiftsCard tbody tr > td{display:none}
     #shiftsCard tbody td.m-summary{display:flex}
     #shiftsCard td.m-summary::before{content:none}
